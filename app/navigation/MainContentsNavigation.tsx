@@ -10,7 +10,7 @@ const Tab = createMaterialBottomTabNavigator();
 const MainContentsNavigation: React.FC = () => {
     return (
         <Tab.Navigator>
-            <Tab.Screen name='courses' component={CoursesScreen}/>
+            <Tab.Screen name='courses' component={CoursesScreen} />
             <Tab.Screen name='chatting' component={ChattingMainScreen}/>
             <Tab.Screen name='mypage' component={MyPageScreen}/>
             <Tab.Screen name='setting' component={SettingScreen}/>

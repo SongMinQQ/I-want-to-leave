@@ -14,7 +14,7 @@ const StackNavigation: React.FC = () => {
                 {/* headerShown을 false로 설정하여 상단 'Login' 제거 */}
                 <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Join" component={JoinMembershipScreen} />
-                <Stack.Screen name="Main" component={MainContentsNavigation} />
+                <Stack.Screen name="Main" component={MainContentsNavigation} options={{ headerShown: false }}/>
             </Stack.Navigator>
         </SafeAreaView>
     );

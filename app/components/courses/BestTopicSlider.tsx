@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dimensions, StyleSheet, Image, View } from 'react-native';
+import { Dimensions, StyleSheet, Image, View, Text } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -13,19 +13,22 @@ const BestTopicSlider = () => {
   ];
 
   return (
-    <Carousel
-      loop
-      width={screenWidth}
-      height={250}
-      autoPlay={true}
-      data={data}
-      scrollAnimationDuration={1000}
-      renderItem={({ item }) => (
-        <View style={styles.slide}>
-          <Image source={{ uri: item.title }} style={styles.image} />
-        </View>
-      )}
-    />
+    <View>
+        <Text style={styles.title}>most topic 제목</Text>
+        <Carousel
+          loop
+          width={screenWidth}
+          height={250}
+          autoPlay={true}
+          data={data}
+          scrollAnimationDuration={1000}
+          renderItem={({ item }) => (
+            <View style={styles.slide}>
+              <Image source={{ uri: item.title }} style={styles.image} />
+            </View>
+          )}
+        />
+    </View>
   );
 };
 
@@ -35,6 +38,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
     borderRadius: 8,
+    padding: 10
   },
   image: {
     width: '100%',
@@ -42,6 +46,9 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     resizeMode: 'cover',
   },
+  title: {
+    paddingLeft: 10
+  }
 });
 
 export default BestTopicSlider;
