@@ -1,12 +1,19 @@
 import React from 'react';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
+import { ScrollView } from 'react-native-gesture-handler';
+import UserInfoBox from '../components/myPage/UserInfoBox';
 
 const MyPageScreen: React.FC = () => {
     return (
-        <View>
-            <Text>마이페이지</Text>
-        </View>
+        <ScrollView style={style.screen}>
+            <UserInfoBox/>
+        </ScrollView>
     );
 };
 
+const style = StyleSheet.create({
+    screen: {
+        backgroundColor: "#FFFFFF"
+    }
+})
 export default MyPageScreen;
