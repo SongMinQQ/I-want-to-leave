@@ -27,7 +27,7 @@ const style = StyleSheet.create({
         fontSize: 15,
         color: '#000000',
         paddingLeft: 10,
-        paddingTop: 10,
+        paddingTop: 2,
         fontWeight: 'bold'
     },
     anotherCourse : {
