@@ -13,7 +13,9 @@ const MyPageScreen: React.FC = () => {
 
 const style = StyleSheet.create({
     screen: {
-        backgroundColor: "#FFFFFF"
+        backgroundColor: "#FFFFFF",
+        display: 'flex',
+        flexDirection: 'column'
     }
 })
 export default MyPageScreen;
