@@ -45,7 +45,7 @@ const articles = [
 
 // 렌더링 함수
 const renderItem = ({ item } : {item : Article}) => (
-  <TouchableOpacity>
+  <TouchableOpacity style={styles.touchableColor}>
       <View style={styles.itemContainer} key={item.id}>
         <Image source={{ uri: item.image }} style={styles.image} />
         <View style={styles.textContainer}>
@@ -101,6 +101,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#777',
   },
+  touchableColor: {
+    backgroundColor: '#FFFFFF'
+  }
 });
 
 export default AnotherCourses;

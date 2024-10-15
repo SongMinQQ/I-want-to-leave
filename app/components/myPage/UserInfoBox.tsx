@@ -4,11 +4,12 @@ import { Dimensions, Platform, StyleSheet, Text, View } from 'react-native';
 const { width: screenWidth } = Dimensions.get('window');
 
 const UserInfoBox: React.FC = () => {
+    //사용자가 현재 여행이 있는지 유무
     const [isTripSoon, setIsTripSoon] = useState(true);
 
-    const showTripInfo = () => {
+    const showTripInfo= () => {
         return(
-            <View style={styles.tripInfoTextWrap}>
+            <View style={styles.tripInfoTextWrap} >
                 <Text style={styles.tripInfoText}>여행지 : 여행지</Text>
                 <Text style={styles.tripInfoText}>예상 여행 경비 : n원</Text>
                 <Text style={[styles.tripInfoText, {alignSelf: 'center', marginTop: 5}]}>이곳을 터치해서 준비물을 확인하세요!</Text>

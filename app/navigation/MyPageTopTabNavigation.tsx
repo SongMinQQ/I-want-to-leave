@@ -33,16 +33,17 @@ const MyPageTopTabNavigation: React.FC = () =>  {
         alignItems: 'flex-start', // 탭 전체 컨테이너도 왼쪽으로 정렬
       },
       swipeEnabled: false,  // 슬라이드 기능 비활성화
-    }}>
+    }}
+    >
       <Tab.Screen 
-      name="mypage" 
+      name="mypage"
       component={MyPageScreen} 
       options={{
         tabBarLabel: "내 여행"
       }}
       />
       <Tab.Screen 
-      name="profile" 
+      name="profile"
       component={ProfileScreen} 
       options={{
         tabBarLabel: "내 프로필"

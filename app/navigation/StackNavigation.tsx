@@ -4,6 +4,8 @@ import { SafeAreaView, StyleSheet } from 'react-native';
 import LoginScreen from '../screens/LoginScreen';
 import JoinMembershipScreen from '../screens/JoinMembershipScreen';
 import MainContentsNavigation from './MainContentsNavigation';
+import ImageSelectScreen from '../screens/ImageSelectScreen';
+import WriteTripScheduleScreen from '../screens/WriteTripScheduleScreen';
 
 const Stack = createStackNavigator();
 
@@ -15,6 +17,8 @@ const StackNavigation: React.FC = () => {
                 <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
                 <Stack.Screen name="Join" component={JoinMembershipScreen} />
                 <Stack.Screen name="Main" component={MainContentsNavigation} options={{ headerShown: false }}/>
+                <Stack.Screen name="ImageSelect" component={ImageSelectScreen}/>
+                <Stack.Screen name="WriteTripSchedule" key="WriteTripSchedule" component={WriteTripScheduleScreen}/>
             </Stack.Navigator>
         </SafeAreaView>
     );
