@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, Switch, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, Switch, TouchableOpacity, StyleSheet, Dimensions, Alert } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import { TripSchedule } from '../../types/types';
 import AntDesign from 'react-native-vector-icons/AntDesign';
@@ -17,10 +17,21 @@ const PickDate: React.FC<PickDateProps> = ({ setNewSchedule }) => {
   const [openEndDate, setOpenEndDate] = useState<boolean>(false);
   const [startDate, setStartDate] = useState<Date>(new Date());
   const [endDate, setEndDate] = useState<Date>(new Date());
+  const [error, setError] = useState<string | null>(null);
 
   const toggleDayTrip = () => setIsDayTrip((prev) => !prev);
 
   const formatDate = (date: Date) => date.toLocaleDateString(); // Format the date for display
+
+  const validateDates = (start: Date, end: Date) => {
+    if (end < start) {
+      setError("종료 날짜는 시작 날짜보다 뒤에 있어야 합니다.");
+      Alert.alert("유효성 오류", "종료 날짜는 시작 날짜보다 뒤에 있어야 합니다.");
+      return false;
+    }
+    setError(null); // Clear the error if dates are valid
+    return true;
+  };
 
   return (
     <View style={styles.container}>
@@ -60,16 +71,22 @@ const PickDate: React.FC<PickDateProps> = ({ setNewSchedule }) => {
         open={openStartDate}
         date={startDate}
         onConfirm={(selectedDate) => {
-          setOpenStartDate(false);
+          setOpenStartDate(false); // 모달을 닫음
           setStartDate(selectedDate);
+      
+          // 종료 날짜보다 뒤일 경우 종료 날짜도 업데이트
+          if (selectedDate > endDate) {
+            setEndDate(selectedDate);
+          }
+      
           setNewSchedule((prevSchedule) => ({
             ...prevSchedule,
-            startDate: selectedDate, // Update startDate
-            endDate: isDayTrip ? selectedDate : prevSchedule.endDate, // For day trip, set endDate same as startDate
+            startDate: selectedDate,
+            endDate: isDayTrip || selectedDate > endDate ? selectedDate : prevSchedule.endDate, 
           }));
         }}
         onCancel={() => {
-          setOpenStartDate(false);
+          setOpenStartDate(false); // 모달을 닫음
         }}
       />
 
@@ -82,11 +99,13 @@ const PickDate: React.FC<PickDateProps> = ({ setNewSchedule }) => {
           date={endDate}
           onConfirm={(selectedDate) => {
             setOpenEndDate(false);
-            setEndDate(selectedDate);
-            setNewSchedule((prevSchedule) => ({
-              ...prevSchedule,
-              endDate: selectedDate, // Update endDate
-            }));
+            if (validateDates(startDate, selectedDate)) {
+              setEndDate(selectedDate);
+              setNewSchedule((prevSchedule) => ({
+                ...prevSchedule,
+                endDate: selectedDate, // Update endDate if valid
+              }));
+            }
           }}
           onCancel={() => {
             setOpenEndDate(false);
@@ -101,7 +120,7 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'column', // Stack elements vertically
     paddingHorizontal: deviceWidth * 0.05, // 5% of the device width for padding
-    paddingTop: 10
+    paddingTop: 15
   },
   topArea: {
     flexDirection: 'row',
@@ -111,7 +130,8 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: deviceWidth * 0.05, // Adjust title size based on the device width
-    color: "#000000"
+    color: "#000000",
+    fontWeight: 'bold'
   },
   switchContainer: {
     flexDirection: 'row',

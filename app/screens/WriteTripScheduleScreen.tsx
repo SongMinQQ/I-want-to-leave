@@ -3,6 +3,7 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import PickDate from '../components/writeTripSchedule/PickDate';
 import { TripSchedule } from '../types/types';
 import WriteScheduleTitle from '../components/writeTripSchedule/WriteScheduleTitle';
+import SelectScheduleImage from '../components/writeTripSchedule/SelectScheduleImage';
 
 const WriteTripScheduleScreen: React.FC = () => {
     const [newSchedule, setNewSchedule] = useState<TripSchedule>({
@@ -17,6 +18,7 @@ const WriteTripScheduleScreen: React.FC = () => {
         <ScrollView style={styles.screen}>
             <PickDate setNewSchedule = {setNewSchedule}/>
             <WriteScheduleTitle setNewSchedule = {setNewSchedule}/>
+            <SelectScheduleImage setNewSchedule = {setNewSchedule}/>
         </ScrollView>
     );
 };
