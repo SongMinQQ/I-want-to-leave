@@ -16,6 +16,8 @@ export interface TripSchedule {
 
   export type RootStackParamList = {
     MainContents: undefined;
-    WriteTripSchedule: undefined; // 파라미터가 없는 경우
+    WriteTripSchedule?: { selectedImage: string }; // 파라미터가 없는 경우
+    ImageSelect: undefined;
+    SelectScheduleImage: undefined;
     // 다른 라우트들 추가
   };
