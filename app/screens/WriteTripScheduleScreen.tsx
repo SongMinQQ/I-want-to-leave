@@ -7,6 +7,7 @@ import InviteFriends from '../components/writeTripSchedule/InviteFriends';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SelectDate from '../components/writeTripSchedule/SelectDate';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import { TripSchedule } from '../types/types';
 
 // Pages with multiple components
 const pages = [
@@ -23,6 +24,14 @@ const pages = [
 
 const WriteTripScheduleScreen: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<number>(0); // Tracks the current page
+    const [newSchedule, setNewSchedule] = useState<TripSchedule>({
+        startDate: new Date(), // Initialize with current date
+        endDate: new Date(),   // Initialize with current date
+        title: '',
+        image: [],
+        member: [],
+        schedule: []
+    });
 
     const goNextPage = () => {
         if (currentPage < pages.length - 1) {
@@ -44,7 +53,7 @@ const WriteTripScheduleScreen: React.FC = () => {
                     const SectionComponent = section.component;
                     return (
                         <View key={index} style={styles.section}>
-                            <SectionComponent />
+                            <SectionComponent startDate={newSchedule.startDate} endDate = {newSchedule.endDate} setNewSchedule={setNewSchedule}/>
                         </View>
                     );
                 })}
