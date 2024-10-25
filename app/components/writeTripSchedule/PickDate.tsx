@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Switch, TouchableOpacity, StyleSheet, Dimensions, Alert } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import { TripSchedule } from '../../types/types';
@@ -8,16 +8,22 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 const { width: deviceWidth } = Dimensions.get('window');
 
 interface PickDateProps {
+  startDate: Date; // 부모 컴포넌트에서 전달되는 시작 날짜
+  endDate: Date; 
   setNewSchedule: React.Dispatch<React.SetStateAction<TripSchedule>>;
 }
 
-const PickDate: React.FC<PickDateProps> = ({ setNewSchedule }) => {
+const PickDate: React.FC<PickDateProps> = ({ startDate, endDate, setNewSchedule }) => {
   const [isDayTrip, setIsDayTrip] = useState<boolean>(true); // Day trip toggle
   const [openStartDate, setOpenStartDate] = useState<boolean>(false);
   const [openEndDate, setOpenEndDate] = useState<boolean>(false);
-  const [startDate, setStartDate] = useState<Date>(new Date());
-  const [endDate, setEndDate] = useState<Date>(new Date());
+  const [pickStartDate, setPickStartDate] = useState<Date>(startDate);
+  const [pickEndDate, setPickEndDate] = useState<Date>(endDate);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setIsDayTrip(startDate.toDateString() === endDate.toDateString());
+  }, [startDate, endDate]);
 
   const toggleDayTrip = () => setIsDayTrip((prev) => !prev);
 
@@ -50,7 +56,7 @@ const PickDate: React.FC<PickDateProps> = ({ setNewSchedule }) => {
         <TouchableOpacity onPress={() => setOpenStartDate(true)}>
           <AntDesign name='calendar' size={deviceWidth * 0.05} color={'#000000'} />
         </TouchableOpacity>
-        <Text style={styles.dateText}> {formatDate(startDate)} </Text>
+        <Text style={styles.dateText}> {formatDate(pickStartDate)} </Text>
 
         {/* Date Range Separator or End Date Picker */}
         {!isDayTrip && (
@@ -59,7 +65,7 @@ const PickDate: React.FC<PickDateProps> = ({ setNewSchedule }) => {
             <TouchableOpacity onPress={() => setOpenEndDate(true)}>
               <AntDesign name='calendar' size={deviceWidth * 0.05} color={'#000000'} />
             </TouchableOpacity>
-            <Text style={styles.dateText}> {formatDate(endDate)} </Text>
+            <Text style={styles.dateText}> {formatDate(pickEndDate)} </Text>
           </>
         )}
       </View>
@@ -69,20 +75,20 @@ const PickDate: React.FC<PickDateProps> = ({ setNewSchedule }) => {
         modal
         mode='date'
         open={openStartDate}
-        date={startDate}
+        date={pickStartDate}
         onConfirm={(selectedDate) => {
           setOpenStartDate(false); // 모달을 닫음
-          setStartDate(selectedDate);
+          setPickStartDate(selectedDate);
       
           // 종료 날짜보다 뒤일 경우 종료 날짜도 업데이트
-          if (selectedDate > endDate) {
-            setEndDate(selectedDate);
+          if (selectedDate > pickEndDate) {
+            setPickEndDate(selectedDate);
           }
       
           setNewSchedule((prevSchedule) => ({
             ...prevSchedule,
             startDate: selectedDate,
-            endDate: isDayTrip || selectedDate > endDate ? selectedDate : prevSchedule.endDate, 
+            endDate: isDayTrip || selectedDate > pickEndDate ? selectedDate : prevSchedule.endDate, 
           }));
         }}
         onCancel={() => {
@@ -96,14 +102,14 @@ const PickDate: React.FC<PickDateProps> = ({ setNewSchedule }) => {
           modal
           mode='date'
           open={openEndDate}
-          date={endDate}
+          date={pickEndDate}
           onConfirm={(selectedDate) => {
             setOpenEndDate(false);
-            if (validateDates(startDate, selectedDate)) {
-              setEndDate(selectedDate);
+            if (validateDates(pickStartDate, selectedDate)) {
+              setPickEndDate(selectedDate);
               setNewSchedule((prevSchedule) => ({
                 ...prevSchedule,
-                endDate: selectedDate, // Update endDate if valid
+                endDate: selectedDate, // Update pickEndDate if valid
               }));
             }
           }}

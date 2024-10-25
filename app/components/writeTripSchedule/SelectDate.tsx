@@ -10,24 +10,32 @@ import {
 } from 'react-native';
 import { TripSchedule } from '../../types/types';
 
+const generateDateList = (start: Date, end: Date) => {
+    const dateList = [];
+    
+    // 시작과 종료 날짜를 복제하여 사용
+    let currentDate = new Date(start);
+    const endDate = new Date(end);
+    
+    // 종료 날짜도 포함하기 위해 endDate + 1로 처리
+    endDate.setDate(endDate.getDate() + 1);
+  
+    while (currentDate < endDate) {
+      dateList.push(new Date(currentDate).toISOString().split('T')[0]); // YYYY-MM-DD 형식
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+  
+    console.log(dateList); // 확인용 로그
+    return dateList;
+  };
+
 interface SelectDateProps {
   startDate: Date; // 시작 날짜
   endDate: Date; // 종료 날짜
   setNewSchedule: React.Dispatch<React.SetStateAction<TripSchedule>>;
 }
 
-// 시작 날짜와 종료 날짜 사이의 날짜들을 생성하는 함수
-const generateDateList = (start: Date, end: Date) => {
-  const dateList = [];
-  let currentDate = new Date(start);
 
-  while (currentDate <= end) {
-    dateList.push(currentDate.toISOString().split('T')[0]); // YYYY-MM-DD 형식
-    currentDate.setDate(currentDate.getDate() + 1);
-  }
-
-  return dateList;
-};
 
 const SelectDate: React.FC<SelectDateProps> = ({ startDate, endDate, setNewSchedule }) => {
   const [isModalVisible, setModalVisible] = useState<boolean>(false); // 모달 상태
@@ -42,11 +50,11 @@ const SelectDate: React.FC<SelectDateProps> = ({ startDate, endDate, setNewSched
   // 날짜 선택 핸들러: 선택된 날짜를 상태에 저장하고 모달 닫기
   const handleSelectDate = (date: string) => {
     setSelectedDate(date);
-    setNewSchedule((prev) => ({
-      ...prev,
-      startDate: new Date(date),
-      endDate: new Date(date), // 동일한 날짜를 시작과 종료 날짜로 설정
-    }));
+    // setNewSchedule((prev) => ({
+    //   ...prev,
+    //   startDate: new Date(date),
+    //   endDate: new Date(date), // 동일한 날짜를 시작과 종료 날짜로 설정
+    // }));
     setModalVisible(false); // 모달 닫기
   };
 
