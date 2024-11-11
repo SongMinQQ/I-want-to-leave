@@ -13,6 +13,7 @@ interface PickDateProps {
   setNewSchedule: React.Dispatch<React.SetStateAction<TripSchedule>>;
 }
 
+
 const PickDate: React.FC<PickDateProps> = ({ startDate, endDate, setNewSchedule }) => {
   const [isDayTrip, setIsDayTrip] = useState<boolean>(true); // Day trip toggle
   const [openStartDate, setOpenStartDate] = useState<boolean>(false);
@@ -101,6 +102,7 @@ const PickDate: React.FC<PickDateProps> = ({ startDate, endDate, setNewSchedule 
         <DatePicker
           modal
           mode='date'
+          locale="ko"
           open={openEndDate}
           date={pickEndDate}
           onConfirm={(selectedDate) => {

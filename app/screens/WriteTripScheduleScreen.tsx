@@ -22,18 +22,33 @@ const pages = [
     ]
 ];
 
+const getKoreaCurrentDate = () => {
+    const now = new Date();
+    const offset = now.getTimezoneOffset();
+    const koreaTime = new Date(now.getTime() + offset + 9 * 60 * 60 * 1000); // 한국 시간으로 변환
+    const koreaDate = new Date(
+        koreaTime.getFullYear(),
+        koreaTime.getMonth(),
+        koreaTime.getDate(),
+        koreaTime.getHours(),
+        koreaTime.getMinutes(),
+        koreaTime.getSeconds()
+    ); // 타임존 정보 없이 한국 시간으로 Date 객체 생성
+    return koreaDate;
+};
+
 const WriteTripScheduleScreen: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<number>(0);
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const [newSchedule, setNewSchedule] = useState<TripSchedule>({
-        startDate: new Date(),
-        endDate: new Date(),
+        startDate: getKoreaCurrentDate(),
+        endDate: getKoreaCurrentDate(),
         title: '',
         image: [],
         member: [],
         schedule: []
     });
-
+    
     useEffect(() => {
         // 키보드 이벤트 리스너 추가
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -42,7 +57,7 @@ const WriteTripScheduleScreen: React.FC = () => {
         const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
             setKeyboardVisible(false);
         });
-
+        // console.log(newSchedule.startDate)
         return () => {
             // 이벤트 리스너 정리
             keyboardDidHideListener.remove();

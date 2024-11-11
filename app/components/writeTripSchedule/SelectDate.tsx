@@ -6,16 +6,17 @@ import {
   FlatList, 
   TouchableOpacity, 
   StyleSheet, 
-  Button 
+  Button
 } from 'react-native';
 import { TripSchedule } from '../../types/types';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const generateDateList = (start: Date, end: Date) => {
     const dateList = [];
-    
     // 시작과 종료 날짜를 복제하여 사용
     let currentDate = new Date(start);
     const endDate = new Date(end);
+    console.log(currentDate);
     
     // 종료 날짜도 포함하기 위해 endDate + 1로 처리
     endDate.setDate(endDate.getDate() + 1);
@@ -76,7 +77,10 @@ const SelectDate: React.FC<SelectDateProps> = ({ startDate, endDate, setNewSched
       {/* 선택된 날짜 표시 */}
       <Text style={styles.label}>선택된 날짜: {selectedDate || '없음'}</Text>
       {/* 모달 열기 버튼 */}
-      <Button title="날짜 선택" onPress={() => setModalVisible(true)} />
+      <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.calendarBtn}>
+        <FontAwesome name='calendar-check-o' size={20} color={'#000000'}/>
+        <Text>날짜 선택</Text>
+      </TouchableOpacity>
 
       {/* 날짜 선택 모달 */}
       <Modal
@@ -105,6 +109,12 @@ const styles = StyleSheet.create({
   container: {
     padding: 10,
     flex: 1,
+  },
+  calendarBtn: {
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center'
   },
   label: {
     fontSize: 18,
