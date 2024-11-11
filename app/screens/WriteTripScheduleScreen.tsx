@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Dimensions } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View, Keyboard, Dimensions } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import PickDate from '../components/writeTripSchedule/PickDate';
 import WriteScheduleTitle from '../components/writeTripSchedule/WriteScheduleTitle';
 import SelectScheduleImage from '../components/writeTripSchedule/SelectScheduleImage';
@@ -9,7 +10,6 @@ import SelectDate from '../components/writeTripSchedule/SelectDate';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { TripSchedule } from '../types/types';
 
-// Pages with multiple components
 const pages = [
     [
         { component: PickDate, title: '날짜 선택' },
@@ -23,15 +23,32 @@ const pages = [
 ];
 
 const WriteTripScheduleScreen: React.FC = () => {
-    const [currentPage, setCurrentPage] = useState<number>(0); // Tracks the current page
+    const [currentPage, setCurrentPage] = useState<number>(0);
+    const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const [newSchedule, setNewSchedule] = useState<TripSchedule>({
-        startDate: new Date(), // Initialize with current date
-        endDate: new Date(),   // Initialize with current date
+        startDate: new Date(),
+        endDate: new Date(),
         title: '',
         image: [],
         member: [],
         schedule: []
     });
+
+    useEffect(() => {
+        // 키보드 이벤트 리스너 추가
+        const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
+            setKeyboardVisible(true);
+        });
+        const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+            setKeyboardVisible(false);
+        });
+
+        return () => {
+            // 이벤트 리스너 정리
+            keyboardDidHideListener.remove();
+            keyboardDidShowListener.remove();
+        };
+    }, []);
 
     const goNextPage = () => {
         if (currentPage < pages.length - 1) {
@@ -47,72 +64,81 @@ const WriteTripScheduleScreen: React.FC = () => {
 
     return (
         <View style={styles.container}>
-            <ScrollView contentContainerStyle={styles.scrollContent}>
-                {/* Render all components in the current page */}
+            <KeyboardAwareScrollView
+                contentContainerStyle={styles.scrollContent}
+                extraScrollHeight={10} // 작은 여유만 추가
+                enableOnAndroid={true}
+                enableAutomaticScroll={false} // 자동 스크롤을 비활성화
+            >
+                {/* 현재 페이지의 컴포넌트들 렌더링 */}
                 {pages[currentPage].map((section, index) => {
                     const SectionComponent = section.component;
                     return (
                         <View key={index} style={styles.section}>
-                            <SectionComponent startDate={newSchedule.startDate} endDate = {newSchedule.endDate} setNewSchedule={setNewSchedule}/>
+                            <SectionComponent
+                                startDate={newSchedule.startDate}
+                                endDate={newSchedule.endDate}
+                                setNewSchedule={setNewSchedule}
+                            />
                         </View>
                     );
                 })}
-            </ScrollView>
+            </KeyboardAwareScrollView>
 
-            {/* Navigation Buttons */}
-            <View style={styles.btnsArea}>
-                {/* Previous button (if applicable) */}
-                {currentPage > 0 && (
+            {/* 네비게이션 바 (화면 하단에 고정 또는 키보드가 올라오면 스크롤과 함께 위치 조정) */}
+            {!isKeyboardVisible && (
+                <View style={styles.btnsArea}>
+                    {currentPage > 0 && (
+                        <TouchableOpacity
+                            style={[styles.levelBtn, styles.leftBtn]}
+                            onPress={goPreviousPage}
+                        >
+                            <MaterialIcons name="arrow-back-ios" size={35} color="#000000" />
+                            <Text style={styles.btnText}>이전</Text>
+                        </TouchableOpacity>
+                    )}
+                    
                     <TouchableOpacity
-                        style={[styles.levelBtn, styles.leftBtn]}
-                        onPress={goPreviousPage}
+                        style={[styles.levelBtn, styles.rightBtn]}
+                        onPress={goNextPage}
                     >
-                        <MaterialIcons name="arrow-back-ios" size={35} color="#000000" />
-                        <Text style={styles.btnText}>이전</Text>
+                        <Text style={styles.btnText}>
+                            {currentPage < pages.length - 1 ? '다음' : '계획 작성'}
+                        </Text>
+                        {currentPage < pages.length - 1 ? (
+                            <MaterialIcons name="arrow-forward-ios" size={35} color="#000000" />
+                        ) : (
+                            <MaterialCommunityIcons name='pencil-plus' size={35} color="#000000" />
+                        )}
                     </TouchableOpacity>
-                )}
-
-                {/* Always show the Next button as a 'Proceed' or 'Submit' button */}
-                <TouchableOpacity
-                    style={[styles.levelBtn, styles.rightBtn]}
-                    onPress={goNextPage} // Adjust this logic as needed
-                >
-                    <Text style={styles.btnText}>
-                        {currentPage < pages.length - 1 ? '다음' : '계획 작성'} {/* "완료" on the last page */}
-                    </Text>
-                    {currentPage < pages.length - 1 ?
-                        <MaterialIcons name="arrow-forward-ios" size={35} color="#000000" />
-                        :
-                        <MaterialCommunityIcons name='pencil-plus' size={35} color="#000000" />}
-                </TouchableOpacity>
-            </View>
+                </View>
+            )}
         </View>
     );
 };
 
-const { height } = Dimensions.get('window'); // Get screen height
-
 const styles = StyleSheet.create({
     container: {
-        flex: 1, // Ensure the container takes up the entire screen
+        flex: 1,
         backgroundColor: '#FFFFFF',
     },
     scrollContent: {
-        // paddingHorizontal: 10,
-        paddingBottom: 80, // Ensure space for the buttons
+        flexGrow: 1,
+        // paddingHorizontal: 20,
+        paddingBottom: 100, // 네비게이션 바 공간 확보
     },
     section: {
-        marginBottom: 20, // Add space between sections
+        marginBottom: 20,
     },
     btnsArea: {
-        position: 'absolute', // Fixed at the bottom
+        position: 'absolute',
         bottom: 0,
         left: 0,
         right: 0,
         flexDirection: 'row',
         alignItems: 'center',
         padding: 20,
-        backgroundColor: '#FFFFFF', // Ensure it doesn’t overlap with the content
+        backgroundColor: '#FFFFFF',
         borderTopWidth: 1,
         borderColor: '#ddd',
     },
@@ -122,11 +148,11 @@ const styles = StyleSheet.create({
     },
     leftBtn: {
         justifyContent: 'flex-start',
-        flex: 1, // Push to the far left
+        flex: 1,
     },
     rightBtn: {
         justifyContent: 'flex-end',
-        flex: 1, // Push to the far right
+        flex: 1,
     },
     btnText: {
         color: '#000000',
