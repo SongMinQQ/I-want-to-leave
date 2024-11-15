@@ -9,6 +9,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SelectDate from '../components/writeTripSchedule/SelectDate';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { TripSchedule } from '../types/types';
+import WriteTimeline from '../components/writeTripSchedule/WriteTimeline';
 
 const pages = [
     [
@@ -18,7 +19,8 @@ const pages = [
         { component: InviteFriends, title: '친구 초대' },
     ],
     [
-        { component: SelectDate, title: '날짜 선택' }
+        { component: SelectDate, title: '날짜 선택' },
+        { component: WriteTimeline, title: '여행 일정 작성'}
     ]
 ];
 
