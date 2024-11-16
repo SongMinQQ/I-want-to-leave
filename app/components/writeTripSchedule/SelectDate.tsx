@@ -6,10 +6,13 @@ import {
   FlatList, 
   TouchableOpacity, 
   StyleSheet, 
-  Button
+  Button,
+  Dimensions
 } from 'react-native';
 import { TripSchedule } from '../../types/types';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+
+const { width: deviceWidth } = Dimensions.get('window');
 
 const generateDateList = (start: Date, end: Date) => {
     const dateList = [];
@@ -74,7 +77,7 @@ const SelectDate: React.FC<SelectDateProps> = ({ startDate, endDate, setNewSched
 
   return (
     <View style={styles.container}>
-      <Text>날짜 선택</Text>
+      <Text style={styles.title}>날짜 선택</Text>
       {/* 선택된 날짜 표시 */}
       <Text style={styles.label}>선택된 날짜: {selectedDate || '없음'}</Text>
       {/* 모달 열기 버튼 */}
@@ -151,7 +154,11 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 16,
   },
-
+  title: {
+    fontSize: deviceWidth * 0.04, // Adjust title size based on the device width
+        color: "#000000",
+        fontWeight: 'bold'
+  }
 });
 
 export default SelectDate;

@@ -146,6 +146,7 @@ const styles = StyleSheet.create({
     },
     section: {
         marginBottom: 20,
+        // alignItems: 'center'
     },
     btnsArea: {
         position: 'absolute',
