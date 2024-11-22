@@ -1,4 +1,5 @@
 const localServer: string = "http://localhost:8080";
+const emulatorServer: string = "http://10.0.2.2:8000";
 
 //안드로이드 기기로 테스트 할 경우 명령어 입력, -s 뒤에 기기명 입력
 //adb -s R3CX10LZABX reverse tcp:8080 tcp:8080
