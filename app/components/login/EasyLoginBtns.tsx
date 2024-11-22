@@ -1,10 +1,10 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
-const EasyLoginBtns: React.FC = () => {
+const EasyLoginBtns: React.FC<{ requestGoogleLogin: () => void }> = ({requestGoogleLogin}) => {
     return (
         <View style={style.btnsArea}>
-            <TouchableOpacity style={style.btns}>
+            <TouchableOpacity style={style.btns} onPress={()=>requestGoogleLogin()}>
                 <Text>google</Text>
             </TouchableOpacity>
             <TouchableOpacity style={style.btns}>

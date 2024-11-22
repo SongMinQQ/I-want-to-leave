@@ -1,11 +1,17 @@
 import React from 'react';
 import { StyleSheet, TextInput, View } from 'react-native';
 
-const WriteIdAndPw: React.FC = () => {
+const WriteIdAndPw: React.FC<{ setIdAndPw: (value: any) => void }> = ({setIdAndPw}: any) => {
     return (
         <View style={style.screen}>
-            <TextInput placeholder='아이디' style={style.boxDesign}/>
-            <TextInput placeholder='비밀번호' style={style.boxDesign} secureTextEntry={true}/>
+            <TextInput placeholder='아이디' 
+            style={style.boxDesign} 
+            onChangeText={(text) => setIdAndPw((prev: any) => ({ ...prev, id: text }))}/>
+            <TextInput 
+            placeholder='비밀번호' 
+            style={style.boxDesign} 
+            secureTextEntry={true} 
+            onChangeText={(text) => setIdAndPw((prev: any) => ({ ...prev, pw: text }))}/>
         </View>
     );
 };

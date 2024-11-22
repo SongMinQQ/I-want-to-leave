@@ -2,11 +2,11 @@ import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 
-const LoginButton = () => {
+const LoginButton: React.FC<{ requestLogin: () => void }> = ({requestLogin}) => {
     const navigation:any = useNavigation();
     return (
         <View style= {style.btnArea}>
-            <TouchableOpacity style={style.loginBtn} onPress={()=> navigation.navigate("Main")}>
+            <TouchableOpacity style={style.loginBtn} onPress={()=> {navigation.navigate("Main"); requestLogin();}}>
                 <Text style={style.btnText}>로그인</Text>
             </TouchableOpacity>
         </View>
