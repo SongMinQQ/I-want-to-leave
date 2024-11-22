@@ -19,5 +19,6 @@ export interface TripSchedule {
     WriteTripSchedule?: { selectedImage: string }; // 파라미터가 없는 경우
     ImageSelect: undefined;
     SelectScheduleImage: undefined;
+    GoogleLogin: { loginuri: string };
     // 다른 라우트들 추가
   };
