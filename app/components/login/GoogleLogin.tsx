@@ -14,7 +14,7 @@ const GoogleLogin: React.FC = () => {
     return (
         <View style={{ flex: 1 }}>
             <WebView
-                source={{ uri: loginuri }}
+                source={{ html: loginuri }}
                 onLoadStart={() => setIsLoading(true)}
                 onLoadEnd={() => setIsLoading(false)}
                 onNavigationStateChange={(event) => {

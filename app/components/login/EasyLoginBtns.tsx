@@ -1,12 +1,14 @@
 import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import GoogleLoginBtn from './GoogleLoginBtn';
 
 const EasyLoginBtns: React.FC<{ requestGoogleLogin: () => void }> = ({requestGoogleLogin}) => {
     return (
         <View style={style.btnsArea}>
-            <TouchableOpacity style={style.btns} onPress={()=>requestGoogleLogin()}>
+            <GoogleLoginBtn/>
+            {/* <TouchableOpacity style={style.btns} onPress={()=>requestGoogleLogin()}>
                 <Text>google</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <TouchableOpacity style={style.btns}>
                 <Text>naver</Text>
             </TouchableOpacity>

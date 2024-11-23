@@ -11,6 +11,7 @@ import { urls } from '../utils/requests';
 import axios from 'axios';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../types/types';
+// import { GOOGLE_OAUTH_CLIENT_ID } from '@env';
 
 const LoginScreen: React.FC = () => {
     const [idAndPw, setIdAndPw] = useState({ id: '', pw: '' });
@@ -30,13 +31,14 @@ const LoginScreen: React.FC = () => {
     const requestGoogleLogin = async () => {
         console.log('구글 로그인을 시도합니다.');
         try {
-            const response = await axios.get(urls.googleLogin);
+            const response = await axios.post(urls.googleLogin);
+            console.log(response.data.authorizationRequestUri);
             const reportTo = response.headers['report-to']; // Access the report-to header
             if (reportTo) {
                 const reportToData = JSON.parse(reportTo); // Parse the JSON string in the header
                 const url = reportToData.endpoints[0].url; // Extract the URL
                 console.log('Google Login URL:', url);
-                navigation.navigate('GoogleLogin', { loginuri: url });
+                navigation.navigate('GoogleLogin', { loginuri: response.data });
             } else {
                 console.log('Report-to header not found in response.');
             }

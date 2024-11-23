@@ -6,6 +6,12 @@ const {getDefaultConfig, mergeConfig} = require('@react-native/metro-config');
  *
  * @type {import('metro-config').MetroConfig}
  */
-const config = {};
+const config = {
+    resolver: {
+        extraNodeModules: {
+          '@env': require.resolve('react-native-dotenv'), // @env 모듈을 추가
+        },
+      },
+};
 
 module.exports = mergeConfig(getDefaultConfig(__dirname), config);
