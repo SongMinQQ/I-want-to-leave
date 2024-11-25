@@ -3,12 +3,14 @@ import { Button, StyleSheet, View, Text, Alert, TouchableOpacity } from 'react-n
 import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
 import { GOOGLE_OAUTH_CLIENT_ID } from '@env';
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import { useNavigation } from '@react-navigation/native';
 
 const GoogleLoginBtn: React.FC = () => {
+    const navigation = useNavigation();
     useEffect(() => {
-        // console.log(GOOGLE_OAUTH_CLIENT_ID);
+        console.log(GOOGLE_OAUTH_CLIENT_ID);
         GoogleSignin.configure({
-            webClientId: GOOGLE_OAUTH_CLIENT_ID, // 환경 변수에서 가져온 클라이언트 ID
+            webClientId: "399836559172-0393cggl9ogq9aco5d7rom7llcrnr2h4.apps.googleusercontent.com", // 환경 변수에서 가져온 클라이언트 ID
             offlineAccess: true, // Refresh token 사용 여부
         });
     }, [GOOGLE_OAUTH_CLIENT_ID]);
@@ -18,6 +20,7 @@ const GoogleLoginBtn: React.FC = () => {
             await GoogleSignin.hasPlayServices(); // Play Services가 사용 가능한지 확인
             const userInfo = await GoogleSignin.signIn(); // Google 로그인 수행
             console.log('User Info:', userInfo);
+            navigation.navigate("Main");
             // Alert.alert('Success', `Welcome ${userInfo.user.name}`);
         } catch (error: any) {
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -27,7 +30,7 @@ const GoogleLoginBtn: React.FC = () => {
             } else if (error.code === statusCodes.PLAY_SERVICES_NOT_AVAILABLE) {
                 Alert.alert('Error', 'Play Services not available or outdated');
             } else {
-                console.error('Google Sign-In Error:', error);
+                console.error('Google Sign-In Error:', error.message);
                 Alert.alert('Error', 'An error occurred during login');
             }
         }

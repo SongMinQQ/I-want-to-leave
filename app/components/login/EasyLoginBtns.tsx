@@ -2,7 +2,7 @@ import React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import GoogleLoginBtn from './GoogleLoginBtn';
 
-const EasyLoginBtns: React.FC<{ requestGoogleLogin: () => void }> = ({requestGoogleLogin}) => {
+const EasyLoginBtns: React.FC = () => {
     return (
         <View style={style.btnsArea}>
             <GoogleLoginBtn/>

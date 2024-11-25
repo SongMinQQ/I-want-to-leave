@@ -79,9 +79,9 @@ android {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.travel"
+    namespace "com.gotravel"
     defaultConfig {
-        applicationId "com.travel"
+        applicationId "com.gotravel"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
@@ -89,10 +89,10 @@ android {
     }
     signingConfigs {
         debug {
-            storeFile file('debug.keystore')
-            storePassword 'android'
-            keyAlias 'androiddebugkey'
-            keyPassword 'android'
+            storeFile file(System.getenv("USERPROFILE") + "/.android/debug.keystore")
+            storePassword "android" // 키스토어 비밀번호
+            keyAlias "androiddebugkey" // 키 별칭
+            keyPassword "android" // 키 비밀번호
         }
     }
     buildTypes {

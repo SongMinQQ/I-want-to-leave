@@ -6,7 +6,6 @@ import JoinMembershipScreen from '../screens/JoinMembershipScreen';
 import MainContentsNavigation from './MainContentsNavigation';
 import ImageSelectScreen from '../screens/ImageSelectScreen';
 import WriteTripScheduleScreen from '../screens/WriteTripScheduleScreen';
-import GoogleLogin from '../components/login/GoogleLogin';
 
 const Stack = createStackNavigator();
 
@@ -20,7 +19,6 @@ const StackNavigation: React.FC = () => {
                 <Stack.Screen name="Main" component={MainContentsNavigation} options={{ headerShown: false }}/>
                 <Stack.Screen name="ImageSelect" component={ImageSelectScreen}/>
                 <Stack.Screen name="WriteTripSchedule" key="WriteTripSchedule" component={WriteTripScheduleScreen}/>
-                <Stack.Screen name="GoogleLogin" component={GoogleLogin}/>
             </Stack.Navigator>
         </SafeAreaView>
     );

@@ -1,4 +1,4 @@
-package com.travel
+package com.gotravel
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

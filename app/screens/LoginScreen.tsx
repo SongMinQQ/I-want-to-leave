@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View, ScrollView } from 'react-native';
 import logo from '../assets/demoLogo.jpg';
 import WriteIdAndPw from '../components/login/WriteIdAndPw';
@@ -9,8 +9,9 @@ import EasyLoginBtns from '../components/login/EasyLoginBtns';
 import GoogleLogin from '../components/login/GoogleLogin'; // GoogleLogin 컴포넌트 추가
 import { urls } from '../utils/requests';
 import axios from 'axios';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { NavigationProp, useFocusEffect, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../types/types';
+import { GoogleSignin } from '@react-native-google-signin/google-signin';
 // import { GOOGLE_OAUTH_CLIENT_ID } from '@env';
 
 const LoginScreen: React.FC = () => {
@@ -28,25 +29,21 @@ const LoginScreen: React.FC = () => {
         }
     };
 
-    const requestGoogleLogin = async () => {
-        console.log('구글 로그인을 시도합니다.');
-        try {
-            const response = await axios.post(urls.googleLogin);
-            console.log(response.data.authorizationRequestUri);
-            const reportTo = response.headers['report-to']; // Access the report-to header
-            if (reportTo) {
-                const reportToData = JSON.parse(reportTo); // Parse the JSON string in the header
-                const url = reportToData.endpoints[0].url; // Extract the URL
-                console.log('Google Login URL:', url);
-                navigation.navigate('GoogleLogin', { loginuri: response.data });
-            } else {
-                console.log('Report-to header not found in response.');
-            }
-        } catch (err) {
+    const googleLoginCheck = async() => {
+        try{
+            const isSignedIn = await GoogleSignin.getCurrentUser();
+            if(isSignedIn) navigation.navigate("Main");
+            else return
+        }
+        catch(err){
             console.error(err);
         }
-    };
-
+    }
+    useFocusEffect(
+        React.useCallback(() => {
+            googleLoginCheck(); // 화면이 포커스될 때마다 로그인 상태 확인
+        }, [])
+    );
     return (
         <>
 
@@ -76,7 +73,7 @@ const LoginScreen: React.FC = () => {
                     <Text style={style.loginText}>간편 로그인</Text>
                 </View>
                 <View>
-                    <EasyLoginBtns requestGoogleLogin={requestGoogleLogin} />
+                    <EasyLoginBtns/>
                 </View>
             </ScrollView>
         </>
