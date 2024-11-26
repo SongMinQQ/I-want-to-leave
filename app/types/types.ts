@@ -20,5 +20,6 @@ export interface TripSchedule {
     ImageSelect: undefined;
     SelectScheduleImage: undefined;
     GoogleLogin: { loginuri: string };
+    Main: undefined
     // 다른 라우트들 추가
   };

@@ -1,5 +1,5 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import React from 'react';
+import React, { useEffect } from 'react';
 import CoursesScreen from '../screens/CoursesScreen';
 import ChattingMainScreen from '../screens/ChattingMainScreen';
 import SettingScreen from '../screens/SettingScreen';
@@ -8,8 +8,8 @@ import Ionicons from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
-import { TouchableOpacity } from 'react-native';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { BackHandler, ToastAndroid, TouchableOpacity } from 'react-native';
+import { NavigationProp, useNavigation, useNavigationState } from '@react-navigation/native';
 import { RootStackParamList } from '../types/types';
 
 
@@ -21,6 +21,32 @@ const EmptyScreen: React.FC = () => {
 
 const MainContentsNavigation: React.FC = () => {
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+    const routesLength = useNavigationState(state => state.routes.length);
+    let backPressCount = 0;
+
+    useEffect(() => {
+        const onBackPress = () => {
+            if (routesLength === 2) { // 스택 내 라우트가 하나일 경우
+                if (backPressCount === 0) {
+                    backPressCount += 1;
+                    ToastAndroid.show('뒤로가기를 한 번 더 누르면 종료됩니다.', ToastAndroid.SHORT);
+                    setTimeout(() => {
+                        backPressCount = 0; // 일정 시간이 지나면 초기화
+                    }, 2000);
+                    return true; // 기본 동작 방지
+                } else {
+                    BackHandler.exitApp(); // 앱 종료
+                }
+            }
+            return false; // 기본 동작 수행
+        };
+
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+        return () => backHandler.remove();
+    }, [routesLength]);
+
     return (
         <Tab.Navigator
         screenOptions={{

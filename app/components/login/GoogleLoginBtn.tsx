@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react';
-import { Button, StyleSheet, View, Text, Alert, TouchableOpacity } from 'react-native';
-import { GoogleSignin, statusCodes } from '@react-native-google-signin/google-signin';
+import { StyleSheet, View, Alert, TouchableOpacity } from 'react-native';
+import { GoogleSignin, statusCodes, GoogleSigninButton } from '@react-native-google-signin/google-signin';
 import { GOOGLE_OAUTH_CLIENT_ID } from '@env';
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import { useNavigation } from '@react-navigation/native';
 
 const GoogleLoginBtn: React.FC = () => {
-    const navigation = useNavigation();
+    const navigation: any = useNavigation();
     useEffect(() => {
         console.log(GOOGLE_OAUTH_CLIENT_ID);
         GoogleSignin.configure({
@@ -37,11 +37,19 @@ const GoogleLoginBtn: React.FC = () => {
     };
 
     return (
-        <View>
-            <TouchableOpacity onPress={signInWithGoogle} >
-                <AntDesign name='google' size={50} color={'#000000'}/>
-            </TouchableOpacity>
-        </View>
+        <GoogleSigninButton
+            size={GoogleSigninButton.Size.Icon}
+            color={GoogleSigninButton.Color.Dark}
+            onPress={() => {
+                // initiate sign in
+                signInWithGoogle();
+            }}
+        />
+        // <View>
+        //     <TouchableOpacity onPress={signInWithGoogle} >
+        //         <AntDesign name='google' size={50} color={'#000000'}/>
+        //     </TouchableOpacity>
+        // </View>
     );
 };
 

@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, View, ScrollView } from 'react-native';
-import logo from '../assets/demoLogo.jpg';
 import WriteIdAndPw from '../components/login/WriteIdAndPw';
 import LoginButton from '../components/login/LoginButton';
 import GoToJoinMembership from '../components/login/GoToJoinMembership';
 import FindIdOrPw from '../components/login/FindIdOrPw';
 import EasyLoginBtns from '../components/login/EasyLoginBtns';
-import GoogleLogin from '../components/login/GoogleLogin'; // GoogleLogin 컴포넌트 추가
 import { urls } from '../utils/requests';
 import axios from 'axios';
 import { NavigationProp, useFocusEffect, useNavigation } from '@react-navigation/native';
@@ -50,7 +48,7 @@ const LoginScreen: React.FC = () => {
             <ScrollView style={style.screen}>
                 <View style={style.logoArea}>
                     <Image
-                        source={logo}
+                        source={require('../assets/demoLogo.jpg')}
                         style={{
                             width: 598,
                             height: 217,

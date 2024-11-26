@@ -1,6 +1,5 @@
 import React from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
 import BestTopicSlider from '../components/courses/BestTopicSlider';
 import CurrentCourses from '../components/courses/CurrentCourses';
 import AnotherCourses from '../components/courses/AnotherCourses';
