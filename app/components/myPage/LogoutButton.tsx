@@ -13,7 +13,7 @@ const LogoutButton: React.FC<LogoutButtonProps> = ({ onLogoutSuccess }) => {
     const handleLogout = async () => {
         try {
             await GoogleSignin.signOut(); // Google 로그아웃
-            Alert.alert('Logout', 'You have been successfully logged out.');
+            Alert.alert('알림', '로그아웃 되었습니다.');
             console.log('User signed out');
             navigation.navigate('Login');
             if (onLogoutSuccess) {

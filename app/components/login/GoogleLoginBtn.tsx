@@ -10,7 +10,7 @@ const GoogleLoginBtn: React.FC = () => {
     useEffect(() => {
         console.log(GOOGLE_OAUTH_CLIENT_ID);
         GoogleSignin.configure({
-            webClientId: "399836559172-0393cggl9ogq9aco5d7rom7llcrnr2h4.apps.googleusercontent.com", // 환경 변수에서 가져온 클라이언트 ID
+            webClientId: GOOGLE_OAUTH_CLIENT_ID, // 환경 변수에서 가져온 클라이언트 ID
             offlineAccess: true, // Refresh token 사용 여부
         });
     }, [GOOGLE_OAUTH_CLIENT_ID]);
