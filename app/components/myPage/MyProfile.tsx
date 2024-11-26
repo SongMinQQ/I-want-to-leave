@@ -1,27 +1,28 @@
-import React, { useState } from 'react';
-import { Dimensions, Image, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import basicProfile from '../../assets/basicProfile.png';
-import AntDesign from 'react-native-vector-icons/AntDesign';
+import React, { useEffect, useState } from 'react';
+import { ActivityIndicator, Dimensions, Image, Platform, StyleSheet, Text, View } from 'react-native';
+import { googleLoginCheck } from '../../utils/utils';
+import LogoutButton from './LogoutButton';
 
 const { width: deviceWidth } = Dimensions.get('window');
 
 const MyProfile: React.FC = () => {
-    const [isEdit, setIsEdit] = useState<Boolean>(false);
-
-    return (
+    const [profileInfo, setProfileInfo] = useState<any>(null);
+    useEffect(()=> {
+        const data: any = googleLoginCheck();
+        setProfileInfo(data.user);
+        // console.log(profileInfo);
+    },[])
+    useEffect(()=> {
+        console.log(profileInfo)
+    },[profileInfo])
+    return profileInfo ? (
         <View style={styles.screen}>
-            {/* Edit Button */}
-            <TouchableOpacity 
-                style={styles.editButton} 
-                onPress={() => setIsEdit(true)}>
-                <AntDesign name="edit" size={20} color={'#000000'} />
-            </TouchableOpacity>
             
             {/* Profile Image */}
-            <Image source={basicProfile} style={styles.profileImage} />
+            <Image source={{uri:profileInfo.photo}} style={styles.profileImage} />
             
             {/* Username */}
-            <Text style={styles.username}>username</Text>
+            <Text style={styles.username}>{profileInfo.name}</Text>
             
             {/* User Info */}
             <View style={styles.userInfoArea}>
@@ -29,15 +30,15 @@ const MyProfile: React.FC = () => {
                 <View><Text>댓글</Text><Text>num</Text></View>
                 <View><Text>여행</Text><Text>num</Text></View>
             </View>
-            
-            {/* Edit Mode */}
-            {isEdit && (
-                <TouchableOpacity onPress={() => setIsEdit(false)}>
-                    <Text>수정</Text>
-                </TouchableOpacity>
-            )}
+            <LogoutButton/>
         </View>
-    );
+    )
+    :
+    (
+        <View style={styles.screen}>
+            <ActivityIndicator size={'large'}/>
+        </View>
+    )
 };
 
 const styles = StyleSheet.create({

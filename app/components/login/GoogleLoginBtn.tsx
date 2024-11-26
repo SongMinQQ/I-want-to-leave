@@ -1,14 +1,12 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, View, Alert, TouchableOpacity } from 'react-native';
+import { StyleSheet, Alert} from 'react-native';
 import { GoogleSignin, statusCodes, GoogleSigninButton } from '@react-native-google-signin/google-signin';
 import { GOOGLE_OAUTH_CLIENT_ID } from '@env';
-import AntDesign from 'react-native-vector-icons/AntDesign'
 import { useNavigation } from '@react-navigation/native';
 
 const GoogleLoginBtn: React.FC = () => {
     const navigation: any = useNavigation();
     useEffect(() => {
-        console.log(GOOGLE_OAUTH_CLIENT_ID);
         GoogleSignin.configure({
             webClientId: GOOGLE_OAUTH_CLIENT_ID, // 환경 변수에서 가져온 클라이언트 ID
             offlineAccess: true, // Refresh token 사용 여부
@@ -20,7 +18,7 @@ const GoogleLoginBtn: React.FC = () => {
             await GoogleSignin.hasPlayServices(); // Play Services가 사용 가능한지 확인
             const userInfo = await GoogleSignin.signIn(); // Google 로그인 수행
             console.log('User Info:', userInfo);
-            navigation.navigate("Main");
+            if(userInfo["data"] != null)navigation.navigate("Main");
             // Alert.alert('Success', `Welcome ${userInfo.user.name}`);
         } catch (error: any) {
             if (error.code === statusCodes.SIGN_IN_CANCELLED) {
@@ -38,32 +36,14 @@ const GoogleLoginBtn: React.FC = () => {
 
     return (
         <GoogleSigninButton
-            size={GoogleSigninButton.Size.Icon}
+            size={GoogleSigninButton.Size.Wide}
             color={GoogleSigninButton.Color.Dark}
             onPress={() => {
                 // initiate sign in
                 signInWithGoogle();
             }}
         />
-        // <View>
-        //     <TouchableOpacity onPress={signInWithGoogle} >
-        //         <AntDesign name='google' size={50} color={'#000000'}/>
-        //     </TouchableOpacity>
-        // </View>
     );
 };
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 20,
-    },
-    title: {
-        fontSize: 24,
-        marginBottom: 20,
-    },
-});
 
 export default GoogleLoginBtn;

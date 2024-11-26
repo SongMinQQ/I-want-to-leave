@@ -23,10 +23,11 @@ const style = StyleSheet.create({
     btnsArea : {
         backgroundColor: "#FFFFFF",
         display: 'flex',
-        flexDirection: 'row',
+        flexDirection: 'column',
         gap: 60,
         justifyContent: 'center',
-        paddingTop: 45
+        paddingTop: 45,
+        alignItems: 'center'
     },
     btns : {
         width: 50,

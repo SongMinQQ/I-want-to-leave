@@ -1,36 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Image, StyleSheet, Text, View, ScrollView } from 'react-native';
-import WriteIdAndPw from '../components/login/WriteIdAndPw';
-import LoginButton from '../components/login/LoginButton';
-import GoToJoinMembership from '../components/login/GoToJoinMembership';
-import FindIdOrPw from '../components/login/FindIdOrPw';
 import EasyLoginBtns from '../components/login/EasyLoginBtns';
-import { urls } from '../utils/requests';
-import axios from 'axios';
 import { NavigationProp, useFocusEffect, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../types/types';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 // import { GOOGLE_OAUTH_CLIENT_ID } from '@env';
 
 const LoginScreen: React.FC = () => {
-    const [idAndPw, setIdAndPw] = useState({ id: '', pw: '' });
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-    const requestLogin = async () => {
-        console.log('로그인을 시도합니다.');
-        try {
-            const response = await axios.get(urls.login);
-            console.log(response);
-            console.log('로그인 성공');
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
+    // back에 JWT 요청 로직 추가 필요
     const googleLoginCheck = async() => {
         try{
             const isSignedIn = await GoogleSignin.getCurrentUser();
-            if(isSignedIn) navigation.navigate("Main");
+            if (isSignedIn != null) {
+                // 로그인 성공 시 Main으로 이동
+                navigation.navigate("Main");
+            }
             else return
         }
         catch(err){
@@ -56,19 +42,7 @@ const LoginScreen: React.FC = () => {
                     />
                 </View>
                 <View>
-                    <WriteIdAndPw setIdAndPw={setIdAndPw} />
-                </View>
-                <View>
-                    <LoginButton requestLogin={requestLogin} />
-                </View>
-                <View>
-                    <GoToJoinMembership />
-                </View>
-                <View>
-                    <FindIdOrPw />
-                </View>
-                <View>
-                    <Text style={style.loginText}>간편 로그인</Text>
+                    <Text style={style.loginText}>로그인 후 떠나볼래를 이용해 보세요!</Text>
                 </View>
                 <View>
                     <EasyLoginBtns/>
