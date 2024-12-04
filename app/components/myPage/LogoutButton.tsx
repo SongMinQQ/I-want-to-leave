@@ -27,7 +27,7 @@ const LogoutButton: React.FC<LogoutButtonProps> = ({ onLogoutSuccess }) => {
 
     return (
         <TouchableOpacity style={styles.button} onPress={handleLogout}>
-            <AntDesign name="logout" size={24} color="#ffffff" />
+            <AntDesign name="logout" size={15} color="#ffffff" />
             <Text style={styles.text}>Logout</Text>
         </TouchableOpacity>
     );
@@ -39,14 +39,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: '#DB4437',
-        paddingVertical: 10,
-        paddingHorizontal: 20,
+        paddingVertical: 5,
+        paddingHorizontal: 10,
         borderRadius: 5,
-        marginVertical: 10,
     },
     text: {
         color: '#ffffff',
-        fontSize: 16,
+        fontSize: 13,
         marginLeft: 10,
     },
 });
