@@ -19,7 +19,7 @@ const pages = [
         { component: InviteFriends, title: '친구 초대' },
     ],
     [
-        { component: SelectDate, title: '날짜 선택' },
+        // { component: SelectDate, title: '날짜 선택' },
         { component: WriteTimeline, title: '여행 일정 작성'}
     ]
 ];
@@ -86,6 +86,7 @@ const WriteTripScheduleScreen: React.FC = () => {
                 extraScrollHeight={10} // 작은 여유만 추가
                 enableOnAndroid={true}
                 enableAutomaticScroll={false} // 자동 스크롤을 비활성화
+                scrollEnabled={!isKeyboardVisible}
             >
                 {/* 현재 페이지의 컴포넌트들 렌더링 */}
                 {pages[currentPage].map((section, index) => {

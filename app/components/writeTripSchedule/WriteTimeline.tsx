@@ -1,116 +1,196 @@
 import React, { useState } from 'react';
-import { Dimensions, Platform, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
-import { FlatList } from 'react-native';
+import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import Feather from 'react-native-vector-icons/Feather';
+import SelectDate from './SelectDate';
+import { TripSchedule } from '../../types/types';
 
+interface WriteTimelineProps {
+    startDate: Date;
+    endDate: Date;
+    setNewSchedule: React.Dispatch<React.SetStateAction<TripSchedule>>;
+}
 
-// Get device width
-const { width: deviceWidth } = Dimensions.get('window');
-
-//디자인을 어떻게 할지, 확정 버튼 눌렀을때는 어떤 UI?
-const WriteTimeline: React.FC = () => {
+const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNewSchedule }) => {
     const initializeTime = () => {
         const date = new Date();
-        date.setHours(0, 0, 0, 0); // 시간, 분, 초, 밀리초를 0으로 설정
+        date.setHours(0, 0, 0, 0);
         return date;
     };
+
+    const [selectedDate, setSelectedDate] = useState<Date>(startDate); // 초기값을 startDate로 설정
+    const [timelines, setTimelines] = useState<{ id: number; time: Date; title: string; content: string }[]>([]);
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-    const [selectedTime, setSelectedTime] = useState(initializeTime());
+
+    const handleDateSelection = (date: Date) => {
+        setSelectedDate(date);
+
+        setNewSchedule((prev) => {
+            const dateKey = date.toISOString().split('T')[0]; // YYYY-MM-DD 형식
+            const existingDate = prev.schedule.find((item) => item.date === dateKey);
+
+            if (existingDate) {
+                setTimelines(existingDate.timelines);
+            } else {
+                setTimelines([]);
+            }
+
+            return prev; // 상태 유지
+        });
+    };
+
+    const addNewTimeline = () => {
+        const newTimeline = {
+            id: timelines.length + 1,
+            time: initializeTime(),
+            title: '',
+            content: '',
+        };
+        setTimelines((prev) => [...prev, newTimeline]);
+    };
+
+    const updateTimeline = (id: number, field: string, value: any) => {
+        setTimelines((prev) =>
+            prev.map((item) => (item.id === id ? { ...item, [field]: value } : item))
+        );
+    };
+
+    const saveToParent = () => {
+        const dateKey = selectedDate.toISOString().split('T')[0]; // YYYY-MM-DD 형식
+
+        setNewSchedule((prev) => {
+            const updatedSchedule = [...prev.schedule];
+            const dateIndex = updatedSchedule.findIndex((item) => item.date === dateKey);
+
+            if (dateIndex !== -1) {
+                updatedSchedule[dateIndex].timelines = timelines;
+            } else {
+                updatedSchedule.push({ date: dateKey, timelines: [...timelines] });
+            }
+
+            return { ...prev, schedule: updatedSchedule };
+        });
+    };
+
+    const renderTimelines = () => {
+        return timelines.map((item) => (
+            <View key={item.id} style={styles.timelineBlock}>
+                <TouchableOpacity onPress={() => setDatePickerVisibility(true)}>
+                    <View style={styles.timeArea}>
+                        <Text style={styles.textStyle}>시간 선택</Text>
+                        <Ionicons name="time-outline" size={20} color="#000000" />
+                        <DatePicker
+                            modal
+                            open={isDatePickerVisible}
+                            mode="time"
+                            date={item.time}
+                            onConfirm={(date) => {
+                                setDatePickerVisibility(false);
+                                updateTimeline(item.id, 'time', date);
+                            }}
+                            onCancel={() => setDatePickerVisibility(false)}
+                        />
+                        <Text style={{ fontSize: 17 }}>
+                            {`${item.time.getHours().toString().padStart(2, '0')}:${item.time
+                                .getMinutes()
+                                .toString()
+                                .padStart(2, '0')}`}
+                        </Text>
+                    </View>
+                </TouchableOpacity>
+
+                <Text style={styles.textStyle}>일정 제목</Text>
+                <TextInput
+                    style={styles.inputStyle}
+                    value={item.title}
+                    onChangeText={(text) => updateTimeline(item.id, 'title', text)}
+                />
+                <Text style={styles.textStyle}>일정 내용</Text>
+                <TextInput
+                    style={styles.inputStyle}
+                    value={item.content}
+                    onChangeText={(text) => updateTimeline(item.id, 'content', text)}
+                />
+            </View>
+        ));
+    };
 
     return (
         <View style={styles.container}>
-        <View style={styles.screen}>
-            <TouchableOpacity onPress={() => setDatePickerVisibility(true)}>
-                <View style={styles.timeArea}>
-                    <Text style={styles.textStyle}>시간 선택</Text>
-                    <Ionicons name='time-outline' size={20} color={'#000000'} />
-                    <DatePicker
-                        modal
-                        open={isDatePickerVisible}
-                        mode='time'
-                        date={selectedTime}
-                        onConfirm={(date) => {
-                            setDatePickerVisibility(false)
-                            setSelectedTime(date);
-                        }}
-                        onCancel={() => {
-                            setDatePickerVisibility(false)
-                        }}
-                    />
-                    <Text style={{ fontSize: 17 }}>
-                        {`${selectedTime.getHours().toString().padStart(2, '0')}:${selectedTime.getMinutes().toString().padStart(2, '0')}`}
-                    </Text>
-                </View>
-            </TouchableOpacity>
+            <SelectDate
+                startDate={startDate}
+                endDate={endDate}
+                setNewSchedule={setNewSchedule}
+                onDateSelected={(date) => handleDateSelection(new Date(date))}
+            />
 
-            <Text style={styles.textStyle}>일정 제목</Text>
-            <TextInput style={styles.inputStyle} />
-            <Text style={styles.textStyle}>일정 내용</Text>
-            <TextInput style={styles.inputStyle} />
-            <View style={styles.completeBtnArea}>
-                <TouchableOpacity 
-                style={{width: 120, borderWidth: 1, borderRadius: 5, borderColor: '#ff1515', alignItems: 'center'}}>
-                    <Feather name='x' size={30} color={'#ff1515'} />
-                </TouchableOpacity>
-                <TouchableOpacity style={{width: 120, borderWidth: 1, borderRadius: 5, borderColor: '#0bff48', alignItems: 'center'}}>
-                    <Feather name='check' size={30} color={'#0bff48'} />
-                </TouchableOpacity>
-            </View>
+            {selectedDate ? (
+                <>
+                    {renderTimelines()}
+                    <TouchableOpacity style={styles.addButton} onPress={addNewTimeline}>
+                        <Text style={styles.addButtonText}>+ 추가</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.saveButton} onPress={saveToParent}>
+                        <Text style={styles.saveButtonText}>저장</Text>
+                    </TouchableOpacity>
+                </>
+            ) : (
+                <Text style={styles.textStyle}>날짜를 먼저 선택해주세요.</Text>
+            )}
         </View>
-    </View>
     );
 };
 
 const styles = StyleSheet.create({
-    screen: {
-        display: 'flex',
-        // gap: 5,
-        paddingHorizontal: deviceWidth * 0.05, // 5% of the device width for padding
-        width: deviceWidth - 40,
-        backgroundColor: '#ffffff',
-        borderRadius: 10,
-        ...Platform.select({
-            ios: {
-                shadowColor: "#000",     // 그림자 색상
-                shadowOffset: { width: 0, height: 2 }, // 그림자 위치
-                shadowOpacity: 0.25,     // 그림자 투명도
-                shadowRadius: 3.84,      // 그림자 퍼짐 정도
-            },
-            android: {
-                elevation: 8,
-            }
-        }),
-        paddingTop: 10,
-        paddingBottom: 10,
-    },
     container: {
-        // flex: 1, // 화면 전체를 채움
-        justifyContent: 'center', // 세로 중앙 정렬
-        alignItems: 'center', // 가로 중앙 정렬
-        backgroundColor: '#ffffff' // 전체 배경색 (선택 사항)
+        flex: 1,
+        backgroundColor: '#fff',
+        padding: 10,
     },
-    inputStyle: {
-        borderBottomWidth: 1
-    },
-    completeBtnArea: {
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        marginTop: 10
+    timelineBlock: {
+        marginBottom: 20,
+        padding: 10,
+        borderWidth: 1,
+        borderColor: '#ddd',
+        borderRadius: 10,
     },
     timeArea: {
-        display: 'flex',
         flexDirection: 'row',
-        gap: 6,
-        alignItems: 'center'
+        alignItems: 'center',
+        marginBottom: 10,
     },
     textStyle: {
-        fontSize: deviceWidth * 0.04, // Adjust title size based on the device width
-        color: "#000000",
-        // fontWeight: 'bold'
-    }
+        fontSize: 16,
+        marginBottom: 5,
+    },
+    inputStyle: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#ddd',
+        marginBottom: 10,
+        padding: 5,
+    },
+    addButton: {
+        backgroundColor: '#007bff',
+        borderRadius: 10,
+        paddingVertical: 10,
+        alignItems: 'center',
+        marginTop: 20,
+    },
+    addButtonText: {
+        color: '#fff',
+        fontSize: 18,
+    },
+    saveButton: {
+        backgroundColor: '#28a745',
+        borderRadius: 10,
+        paddingVertical: 10,
+        alignItems: 'center',
+        marginTop: 10,
+    },
+    saveButtonText: {
+        color: '#fff',
+        fontSize: 18,
+    },
 });
 
 export default WriteTimeline;

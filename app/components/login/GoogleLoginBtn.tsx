@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { StyleSheet, Alert} from 'react-native';
+import { Alert } from 'react-native';
 import { GoogleSignin, statusCodes, GoogleSigninButton } from '@react-native-google-signin/google-signin';
 import { GOOGLE_OAUTH_CLIENT_ID } from '@env';
 import { useNavigation } from '@react-navigation/native';

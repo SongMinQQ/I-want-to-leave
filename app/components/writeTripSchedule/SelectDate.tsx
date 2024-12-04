@@ -37,11 +37,12 @@ interface SelectDateProps {
   startDate: Date; // 시작 날짜
   endDate: Date; // 종료 날짜
   setNewSchedule: React.Dispatch<React.SetStateAction<TripSchedule>>;
+  onDateSelected: (date: Date) => void;
 }
 
 
 
-const SelectDate: React.FC<SelectDateProps> = ({ startDate, endDate, setNewSchedule }) => {
+const SelectDate: React.FC<SelectDateProps> = ({ startDate, endDate, onDateSelected}) => {
   const [isModalVisible, setModalVisible] = useState<boolean>(false); // 모달 상태
   const [selectedDate, setSelectedDate] = useState<string | null>(null); // 선택된 날짜
   const [dateList, setDateList] = useState<string[]>([]); // 날짜 리스트
@@ -59,6 +60,7 @@ const SelectDate: React.FC<SelectDateProps> = ({ startDate, endDate, setNewSched
     //   startDate: new Date(date),
     //   endDate: new Date(date), // 동일한 날짜를 시작과 종료 날짜로 설정
     // }));
+    onDateSelected(new Date(date));
     setModalVisible(false); // 모달 닫기
   };
 

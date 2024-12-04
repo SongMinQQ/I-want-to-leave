@@ -11,7 +11,10 @@ export interface TripSchedule {
     title: string;
     image: string[]; // Array of strings (image URLs or paths)
     member: string[]; // Array of member names
-    schedule: ScheduleItem[]; // Array of ScheduleItem objects
+    schedule: { 
+      date: string; 
+      timelines: { id: number; time: Date; title: string; content: string }[] 
+    }[]; // Array of ScheduleItem objects
   }
 
   export type RootStackParamList = {
