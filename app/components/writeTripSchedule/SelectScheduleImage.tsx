@@ -5,6 +5,7 @@ import AndDesign from 'react-native-vector-icons/AntDesign';
 import Entypo from 'react-native-vector-icons/Entypo';
 import { NavigationProp, RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import Carousel from 'react-native-reanimated-carousel'; // Carousel import
+import { launchImageLibrary } from 'react-native-image-picker';
 
 interface SelectScheduleImageProps {
     setNewSchedule: React.Dispatch<React.SetStateAction<TripSchedule>>;
@@ -16,7 +17,7 @@ const { width: deviceWidth } = Dimensions.get('window');
 
 const SelectScheduleImage: React.FC<SelectScheduleImageProps> = ({ setNewSchedule }) => {
     const [images, setImages] = useState<string[]>([]); // 이미지 배열
-
+    const [selectImageToGallery, setSelectImageToGallery] = useState(null);
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const route = useRoute<SelectScheduleImageRouteProp>();
 
@@ -27,7 +28,12 @@ const SelectScheduleImage: React.FC<SelectScheduleImageProps> = ({ setNewSchedul
             setImages((prevImages) => [...prevImages, newImage]);
         }
     }, [route.params]);
-
+    useEffect(()=> {
+        if(selectImageToGallery){
+            console.log(selectImageToGallery)
+            setImages((prevImages) => [...prevImages, selectImageToGallery.uri]);
+        }
+    },[selectImageToGallery])
     /**이미지 추가 핸들러*/ 
     const handleAddImage = () => {
         Alert.alert(
@@ -49,6 +55,19 @@ const SelectScheduleImage: React.FC<SelectScheduleImageProps> = ({ setNewSchedul
     const selectFromGallery = () => {
         console.log('갤러리에서 이미지를 선택합니다.');
         // 갤러리 연동 로직 추가 필요 (e.g., react-native-image-picker)
+        const options = {
+            noData: true,
+          };
+      
+          launchImageLibrary(options, (response) => {
+            if (response.didCancel) {
+              console.log('User cancelled image picker');
+            } else if (response.error) {
+              console.log('ImagePicker Error: ', response.error);
+            } else {
+                setSelectImageToGallery(response.assets[0]);
+            }
+          });
     };
 
     return (
