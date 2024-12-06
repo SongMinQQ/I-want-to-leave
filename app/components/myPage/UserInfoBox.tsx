@@ -1,11 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Dimensions, Platform, StyleSheet, Text, View } from 'react-native';
+import { googleLoginCheck } from '../../utils/utils';
 
 const { width: screenWidth } = Dimensions.get('window');
 
 const UserInfoBox: React.FC = () => {
     //사용자가 현재 여행이 있는지 유무
     const [isTripSoon, setIsTripSoon] = useState(true);
+
+    //구글 로그인 정보 가져오기
+    const [profileInfo, setProfileInfo] = useState<any>(null);
+    useEffect(()=> {
+        const data: any = googleLoginCheck();
+        setProfileInfo(data.user);
+        // console.log(profileInfo);
+    },[])
 
     const showTripInfo= () => {
         return(
@@ -18,7 +27,9 @@ const UserInfoBox: React.FC = () => {
     }
     return (
         <View style= {styles.infoCard}>
-            <Text style={styles.helloText}>안녕하세요 <Text style={styles.userNameText}>username</Text>님.</Text>
+            {profileInfo ? <Text style={styles.helloText}>안녕하세요 <Text style={styles.userNameText}>{profileInfo.name}</Text>님.</Text>
+            : 
+            <Text style={styles.helloText}>로그인이 되어있지 않습니다. 로그인 정보를 확인해주세요.</Text>}
             <View style={styles.tripCard}>
                 <Text style={styles.tripText}>곧 떠날 여행</Text>
                 <View style={styles.widthLine}/>
