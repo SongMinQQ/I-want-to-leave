@@ -1,14 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Image, StyleSheet, Text, View, ScrollView } from 'react-native';
 import EasyLoginBtns from '../components/login/EasyLoginBtns';
 import { NavigationProp, useFocusEffect, useNavigation } from '@react-navigation/native';
 import { RootStackParamList } from '../types/types';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { useDispatch, useSelector } from 'react-redux';
+import { requestGalleryPermission } from '../redux/permissionSlice';
 // import { GOOGLE_OAUTH_CLIENT_ID } from '@env';
 
 const LoginScreen: React.FC = () => {
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
+    //사용자가 처음 앱에 입장 시 권한 요청
+    const dispatch = useDispatch();
+    const { galleryPermission, loading, error } = useSelector((state: any) => state.permissions);
+
+    const handleRequestPermission = () => {
+        dispatch(requestGalleryPermission());
+    };
     // back에 JWT 요청 로직 추가 필요
     const googleLoginCheck = async() => {
         try{
@@ -23,6 +32,12 @@ const LoginScreen: React.FC = () => {
             console.error(err);
         }
     }
+    useEffect(()=> {
+        console.log("gallery permission : " + galleryPermission , typeof(galleryPermission));
+        if (galleryPermission === 'denied' || galleryPermission === 'unavailable') {
+            handleRequestPermission();
+          }
+    },[galleryPermission])
     useFocusEffect(
         React.useCallback(() => {
             googleLoginCheck(); // 화면이 포커스될 때마다 로그인 상태 확인

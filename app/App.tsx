@@ -7,7 +7,6 @@
 
 import React from 'react';
 import {
-  SafeAreaView,
   StyleSheet,
   useColorScheme,
 } from 'react-native';
@@ -15,23 +14,20 @@ import {
 import {
   Colors,
 } from 'react-native/Libraries/NewAppScreen';
-import LoginScreen from './screens/LoginScreen';
 import { NavigationContainer } from '@react-navigation/native';
 import StackNavigation from './navigation/StackNavigation';
+import { Provider } from 'react-redux';
+import store from './redux/store';
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
   return (
-    <NavigationContainer>
-      {/* <SafeAreaView style={backgroundStyle}> */}
-        <StackNavigation/>
-      {/* </SafeAreaView> */}
-    </NavigationContainer>
+      <Provider store={store}>
+        <NavigationContainer>
+          {/* <SafeAreaView style={backgroundStyle}> */}
+          <StackNavigation/>
+          {/* </SafeAreaView> */}
+        </NavigationContainer>
+      </Provider>
   );
 }
 
