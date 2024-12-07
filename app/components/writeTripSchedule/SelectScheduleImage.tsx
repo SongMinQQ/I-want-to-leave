@@ -28,6 +28,7 @@ const SelectScheduleImage: React.FC<SelectScheduleImageProps> = ({ setNewSchedul
             setImages((prevImages) => [...prevImages, newImage]);
         }
     }, [route.params]);
+    // 갤러리에서 이미지를 선택 시 이를 상태에 추가
     useEffect(()=> {
         if(selectImageToGallery){
             console.log(selectImageToGallery)

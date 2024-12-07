@@ -21,10 +21,7 @@ const Mypost: React.FC<MypostProps> = ({item}) => {
         image,
         content
     }=item;
-    useEffect(() => {
-        console.log("item");
-        
-    },[]);
+
     return (
         <View>
             <Text>{title}</Text>

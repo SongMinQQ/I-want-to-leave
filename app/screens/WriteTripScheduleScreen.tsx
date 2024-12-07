@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Component } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View, Keyboard, Dimensions } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import PickDate from '../components/writeTripSchedule/PickDate';
 import WriteScheduleTitle from '../components/writeTripSchedule/WriteScheduleTitle';
+import WriteScheduleInformation from '../components/writeTripSchedule/WriteScheduleInformation';
 import SelectScheduleImage from '../components/writeTripSchedule/SelectScheduleImage';
 import InviteFriends from '../components/writeTripSchedule/InviteFriends';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
@@ -15,6 +16,7 @@ const pages = [
     [
         { component: PickDate, title: '날짜 선택' },
         { component: WriteScheduleTitle, title: '여행 제목 작성' },
+        { component: WriteScheduleInformation, title: '여행 설명 작성'},
         { component: SelectScheduleImage, title: '대표 이미지 선택' },
         { component: InviteFriends, title: '친구 초대' },
     ],
@@ -46,6 +48,7 @@ const WriteTripScheduleScreen: React.FC = () => {
         startDate: getKoreaCurrentDate(),
         endDate: getKoreaCurrentDate(),
         title: '',
+        information: '',
         image: [],
         member: [],
         schedule: []

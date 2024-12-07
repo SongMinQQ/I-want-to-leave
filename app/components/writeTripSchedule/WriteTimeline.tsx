@@ -11,6 +11,14 @@ interface WriteTimelineProps {
     setNewSchedule: React.Dispatch<React.SetStateAction<TripSchedule>>;
 }
 
+type Timeline = {
+    id: number;
+    time: Date;
+    title: string;
+    content: string;
+    isDatePickerVisible: boolean;
+};
+
 const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNewSchedule }) => {
     const initializeTime = () => {
         const date = new Date();
@@ -19,22 +27,28 @@ const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNe
     };
 
     const [selectedDate, setSelectedDate] = useState<Date>(startDate); // 초기값을 startDate로 설정
-    const [timelines, setTimelines] = useState<{ id: number; time: Date; title: string; content: string }[]>([]);
+    const [timelines, setTimelines] = useState<Timeline[]>([]); 
     const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
     const handleDateSelection = (date: Date) => {
         setSelectedDate(date);
-
+    
         setNewSchedule((prev) => {
             const dateKey = date.toISOString().split('T')[0]; // YYYY-MM-DD 형식
             const existingDate = prev.schedule.find((item) => item.date === dateKey);
-
+    
             if (existingDate) {
-                setTimelines(existingDate.timelines);
+                // 기존 타임라인에 `isDatePickerVisible` 추가
+                const updatedTimelines = existingDate.timelines.map((timeline) => ({
+                    ...timeline,
+                    isDatePickerVisible: false, // 기본값 추가
+                }));
+                setTimelines(updatedTimelines);
             } else {
+                // 새로운 날짜의 타임라인 초기화
                 setTimelines([]);
             }
-
+    
             return prev; // 상태 유지
         });
     };
@@ -45,6 +59,7 @@ const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNe
             time: initializeTime(),
             title: '',
             content: '',
+            isDatePickerVisible: false, // 추가
         };
         setTimelines((prev) => [...prev, newTimeline]);
     };
@@ -75,20 +90,22 @@ const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNe
     const renderTimelines = () => {
         return timelines.map((item) => (
             <View key={item.id} style={styles.timelineBlock}>
-                <TouchableOpacity onPress={() => setDatePickerVisibility(true)}>
+                <TouchableOpacity
+                    onPress={() => updateTimeline(item.id, 'isDatePickerVisible', true)}
+                >
                     <View style={styles.timeArea}>
                         <Text style={styles.textStyle}>시간 선택</Text>
                         <Ionicons name="time-outline" size={20} color="#000000" />
                         <DatePicker
                             modal
-                            open={isDatePickerVisible}
+                            open={item.isDatePickerVisible}
                             mode="time"
                             date={item.time}
                             onConfirm={(date) => {
-                                setDatePickerVisibility(false);
+                                updateTimeline(item.id, 'isDatePickerVisible', false);
                                 updateTimeline(item.id, 'time', date);
                             }}
-                            onCancel={() => setDatePickerVisibility(false)}
+                            onCancel={() => updateTimeline(item.id, 'isDatePickerVisible', false)}
                         />
                         <Text style={{ fontSize: 17 }}>
                             {`${item.time.getHours().toString().padStart(2, '0')}:${item.time
@@ -98,7 +115,7 @@ const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNe
                         </Text>
                     </View>
                 </TouchableOpacity>
-
+    
                 <Text style={styles.textStyle}>일정 제목</Text>
                 <TextInput
                     style={styles.inputStyle}

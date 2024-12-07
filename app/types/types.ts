@@ -9,6 +9,7 @@ export interface TripSchedule {
     startDate: Date; // Start date of the trip
     endDate: Date;   // End date of the trip
     title: string;
+    information: string;
     image: string[]; // Array of strings (image URLs or paths)
     member: string[]; // Array of member names
     schedule: { 
