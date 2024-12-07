@@ -6,13 +6,14 @@ import { RootStackParamList } from '../types/types';
 import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useDispatch, useSelector } from 'react-redux';
 import { requestGalleryPermission } from '../redux/permissionSlice';
+import { AppDispatch } from '../redux/store';
 // import { GOOGLE_OAUTH_CLIENT_ID } from '@env';
 
 const LoginScreen: React.FC = () => {
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
     //사용자가 처음 앱에 입장 시 권한 요청
-    const dispatch = useDispatch();
+    const dispatch = useDispatch<AppDispatch>();
     const { galleryPermission, loading, error } = useSelector((state: any) => state.permissions);
 
     const handleRequestPermission = () => {
