@@ -53,7 +53,7 @@ const WriteTripScheduleScreen: React.FC = () => {
         member: [],
         schedule: []
     });
-    
+
     useEffect(() => {
         // 키보드 이벤트 리스너 추가
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {

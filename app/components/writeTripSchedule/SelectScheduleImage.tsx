@@ -21,6 +21,14 @@ const SelectScheduleImage: React.FC<SelectScheduleImageProps> = ({ setNewSchedul
     const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const route = useRoute<SelectScheduleImageRouteProp>();
 
+    //WriteTripScheduleScreen의 상태에 선택한 이미지 url 반영
+    useEffect(() => {
+        setNewSchedule((prev) => ({
+            ...prev,
+            image: images, // TripSchedule의 image 속성에 업데이트된 이미지 배열 저장
+        }));
+    }, [images, setNewSchedule]);
+
     // 이전 화면에서 선택한 이미지가 있을 경우 이를 상태에 추가
     useEffect(() => {
         if (route.params?.selectedImage) {
