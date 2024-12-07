@@ -4,9 +4,12 @@ import { GoogleSignin, statusCodes, GoogleSigninButton } from '@react-native-goo
 import { GOOGLE_OAUTH_CLIENT_ID } from '@env';
 import { useNavigation } from '@react-navigation/native';
 import { loginUser } from '../../utils/loginTokenHandler';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../../redux/store';
 
 const GoogleLoginBtn: React.FC = () => {
     const navigation: any = useNavigation();
+    const dispatch = useDispatch<AppDispatch>()
     useEffect(() => {
         GoogleSignin.configure({
             webClientId: GOOGLE_OAUTH_CLIENT_ID, // 환경 변수에서 가져온 클라이언트 ID
@@ -19,7 +22,7 @@ const GoogleLoginBtn: React.FC = () => {
             await GoogleSignin.hasPlayServices(); // Play Services가 사용 가능한지 확인
             const userInfo = await GoogleSignin.signIn(); // Google 로그인 수행
             console.log('User Info:', userInfo);
-            await loginUser();
+            await dispatch(loginUser())
             if(userInfo["data"] != null)navigation.navigate("Main");
             // Alert.alert('Success', `Welcome ${userInfo.user.name}`);
         } catch (error: any) {

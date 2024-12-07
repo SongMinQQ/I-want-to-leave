@@ -21,7 +21,7 @@ const loginUser = () => async (dispatch: AppDispatch) => {
             },
             // data: userInfo
         });
-        console.log(response);
+        console.log("토큰 요청 성공 : " + response.headers['authorization']);
         const token = response.headers['authorization'] || response.headers['Authorization'];
         dispatch(setToken(token)); // 받은 토큰 저장
     } catch (error: any) {
@@ -44,9 +44,9 @@ const checkAuthState = () => (dispatch: AppDispatch, getState: () => RootState) 
 };
 
 // 로그아웃
-const handleLogout = () => (dispatch: AppDispatch) => {
+const deleteToken = () => (dispatch: AppDispatch) => {
     dispatch(logout());
-    console.log('User logged out successfully');
+    console.log('유저 로그아웃, 요청 토큰 삭제');
 };
 
-export { loginUser, checkAuthState, handleLogout };
+export { loginUser, checkAuthState, deleteToken };

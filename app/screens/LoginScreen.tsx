@@ -22,7 +22,7 @@ const LoginScreen: React.FC = () => {
     };
     // back에 JWT 요청 로직 추가 필요
     const googleLoginCheck = async() => {
-        await dispatch(loginUser());
+        // await dispatch(loginUser());
         try{
             const isSignedIn = await GoogleSignin.getCurrentUser();
             if (isSignedIn != null) {
