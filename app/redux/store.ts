@@ -1,9 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
 import permissionReducer from './permissionSlice';
-
+import getTokenReducer from './getToken';
 const store = configureStore({
   reducer: {
     permissions: permissionReducer,
+    getToken: getTokenReducer,
   },
 });
 

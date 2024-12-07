@@ -3,6 +3,7 @@ import { Alert } from 'react-native';
 import { GoogleSignin, statusCodes, GoogleSigninButton } from '@react-native-google-signin/google-signin';
 import { GOOGLE_OAUTH_CLIENT_ID } from '@env';
 import { useNavigation } from '@react-navigation/native';
+import { loginUser } from '../../utils/loginTokenHandler';
 
 const GoogleLoginBtn: React.FC = () => {
     const navigation: any = useNavigation();
@@ -18,6 +19,7 @@ const GoogleLoginBtn: React.FC = () => {
             await GoogleSignin.hasPlayServices(); // Play Services가 사용 가능한지 확인
             const userInfo = await GoogleSignin.signIn(); // Google 로그인 수행
             console.log('User Info:', userInfo);
+            await loginUser();
             if(userInfo["data"] != null)navigation.navigate("Main");
             // Alert.alert('Success', `Welcome ${userInfo.user.name}`);
         } catch (error: any) {

@@ -7,6 +7,7 @@ import { GoogleSignin } from '@react-native-google-signin/google-signin';
 import { useDispatch, useSelector } from 'react-redux';
 import { requestGalleryPermission } from '../redux/permissionSlice';
 import { AppDispatch } from '../redux/store';
+import { loginUser } from '../utils/loginTokenHandler';
 // import { GOOGLE_OAUTH_CLIENT_ID } from '@env';
 
 const LoginScreen: React.FC = () => {
@@ -21,10 +22,12 @@ const LoginScreen: React.FC = () => {
     };
     // back에 JWT 요청 로직 추가 필요
     const googleLoginCheck = async() => {
+        await dispatch(loginUser());
         try{
             const isSignedIn = await GoogleSignin.getCurrentUser();
             if (isSignedIn != null) {
                 // 로그인 성공 시 Main으로 이동
+                console.log(isSignedIn.user)
                 navigation.navigate("Main");
             }
             else return
