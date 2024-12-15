@@ -11,6 +11,10 @@ import SelectDate from '../components/writeTripSchedule/SelectDate';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { TripSchedule } from '../types/types';
 import WriteTimeline from '../components/writeTripSchedule/WriteTimeline';
+import axios from 'axios';
+import { urls } from '../utils/requests';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
 
 const pages = [
     [
@@ -26,27 +30,26 @@ const pages = [
     ]
 ];
 
-const getKoreaCurrentDate = () => {
+const getKoreaMidnightDate = () => {
     const now = new Date();
-    const offset = now.getTimezoneOffset();
-    const koreaTime = new Date(now.getTime() + offset + 9 * 60 * 60 * 1000); // 한국 시간으로 변환
-    const koreaDate = new Date(
-        koreaTime.getFullYear(),
-        koreaTime.getMonth(),
-        koreaTime.getDate(),
-        koreaTime.getHours(),
-        koreaTime.getMinutes(),
-        koreaTime.getSeconds()
-    ); // 타임존 정보 없이 한국 시간으로 Date 객체 생성
-    return koreaDate;
+    // 현재 시간을 UTC로 변환 (ms 단위)
+    const utcTime = now.getTime() + (now.getTimezoneOffset() * 60 * 1000);
+    // KST(UTC+9)로 변환
+    const kstTime = utcTime + (9 * 60 * 60 * 1000);
+    const kstDate = new Date(kstTime);
+
+    // 해당 날짜를 자정(00:00:00)으로 설정
+    kstDate.setHours(0, 0, 0, 0);
+
+    return kstDate;
 };
 
 const WriteTripScheduleScreen: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<number>(0);
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const [newSchedule, setNewSchedule] = useState<TripSchedule>({
-        startDate: getKoreaCurrentDate(),
-        endDate: getKoreaCurrentDate(),
+        startDate: getKoreaMidnightDate(),
+        endDate: getKoreaMidnightDate(),
         title: '',
         information: '',
         image: [],
@@ -54,6 +57,9 @@ const WriteTripScheduleScreen: React.FC = () => {
         schedule: []
     });
 
+    // useEffect(()=> {
+    //     console.log(newSchedule.schedule[0]?.timelines);
+    // }, [newSchedule]);
     useEffect(() => {
         // 키보드 이벤트 리스너 추가
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {
@@ -82,6 +88,22 @@ const WriteTripScheduleScreen: React.FC = () => {
         }
     };
 
+    const token = useSelector((state: RootState) => state.getToken.token);
+    const generateTripSchedule = async() => {
+        console.log(token);
+        
+        try{
+            const response = await axios.post(urls.generateSchedule,newSchedule,{headers:{
+                Authorization : token,
+                'Content-Type': 'application/json',
+            }})
+            console.log(response);
+        }
+        catch(err){
+            console.error(err);
+            
+        }
+    }
     return (
         <View style={styles.container}>
             <KeyboardAwareScrollView
@@ -129,7 +151,7 @@ const WriteTripScheduleScreen: React.FC = () => {
                         {currentPage < pages.length - 1 ? (
                             <MaterialIcons name="arrow-forward-ios" size={35} color="#000000" />
                         ) : (
-                            <MaterialCommunityIcons name='pencil-plus' size={35} color="#000000" />
+                            <MaterialCommunityIcons name='pencil-plus' size={35} color="#000000" onPress={generateTripSchedule}/>
                         )}
                     </TouchableOpacity>
                 </View>

@@ -6,5 +6,6 @@ const emulatorServer: string = "http://10.0.2.2:8000";
 
 export const urls = {
     login : `${localServer}/login`,
-    googleLogin: `${localServer}/oauth2/authorization/Google`
+    googleLogin: `${localServer}/oauth2/authorization/Google`,
+    generateSchedule: `${localServer}/schedule/initialize`
 }

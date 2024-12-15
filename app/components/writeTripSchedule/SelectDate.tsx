@@ -14,24 +14,41 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const { width: deviceWidth } = Dimensions.get('window');
 
+// 날짜를 자정으로 맞추는 헬퍼 함수
+const setLocalMidnight = (date: Date) => {
+  const d = new Date(date);
+  d.setHours(0, 0, 0, 0);
+  return d;
+};
+
+// 로컬 날짜를 YYYY-MM-DD 문자열로 포맷팅
+const formatLocalDate = (date: Date) => {
+  const year = date.getFullYear();
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  return `${year}-${month}-${day}`;
+};
+
 const generateDateList = (start: Date, end: Date) => {
-    const dateList = [];
-    // 시작과 종료 날짜를 복제하여 사용
-    let currentDate = new Date(start);
-    const endDate = new Date(end);
-    // console.log(currentDate);
-    
-    // 종료 날짜도 포함하기 위해 endDate + 1로 처리
-    endDate.setDate(endDate.getDate() + 1);
-  
-    while (currentDate < endDate) {
-      dateList.push(new Date(currentDate).toISOString().split('T')[0]); // YYYY-MM-DD 형식
-      currentDate.setDate(currentDate.getDate() + 1);
-    }
-  
-    // console.log(dateList); // 확인용 로그
-    return dateList;
-  };
+  const dateList: string[] = [];
+
+  let currentDate = setLocalMidnight(start);
+  let endDate = setLocalMidnight(end);
+
+  // 종료 날짜까지 포함하기 위해 endDate를 기준으로 <= 비교
+  while (currentDate <= endDate) {
+    dateList.push(formatLocalDate(currentDate));
+    // 날짜를 1일씩 증가
+    currentDate = new Date(
+      currentDate.getFullYear(),
+      currentDate.getMonth(),
+      currentDate.getDate() + 1
+    );
+  }
+
+  return dateList;
+};
+
 
 interface SelectDateProps {
   startDate: Date; // 시작 날짜
@@ -47,9 +64,14 @@ const SelectDate: React.FC<SelectDateProps> = ({ startDate, endDate, onDateSelec
   const [selectedDate, setSelectedDate] = useState<string | null>(null); // 선택된 날짜
   const [dateList, setDateList] = useState<string[]>([]); // 날짜 리스트
 
-  // 컴포넌트가 마운트되면 날짜 리스트 생성
+  // 날짜 리스트 생성 및 첫 번째 날짜 자동 선택
   useEffect(() => {
-    setDateList(generateDateList(startDate, endDate));
+    const newList = generateDateList(startDate, endDate);
+    setDateList(newList);
+    if (newList.length > 0) {
+      setSelectedDate(newList[0]);
+      onDateSelected(new Date(newList[0]));
+    }
   }, [startDate, endDate]);
 
   // 날짜 선택 핸들러: 선택된 날짜를 상태에 저장하고 모달 닫기

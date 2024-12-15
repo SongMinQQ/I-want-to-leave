@@ -15,20 +15,31 @@ interface PickDateProps {
 
 
 const PickDate: React.FC<PickDateProps> = ({ startDate, endDate, setNewSchedule }) => {
+  const kstStartDate = new Date(new Date(startDate).getTime());
   const [isDayTrip, setIsDayTrip] = useState<boolean>(true); // Day trip toggle
   const [openStartDate, setOpenStartDate] = useState<boolean>(false);
   const [openEndDate, setOpenEndDate] = useState<boolean>(false);
-  const [pickStartDate, setPickStartDate] = useState<Date>(startDate);
+  const [pickStartDate, setPickStartDate] = useState<Date>(kstStartDate);
   const [pickEndDate, setPickEndDate] = useState<Date>(endDate);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     setIsDayTrip(startDate.toDateString() === endDate.toDateString());
+    console.log(formatDate(pickStartDate))
   }, [startDate, endDate]);
 
   const toggleDayTrip = () => setIsDayTrip((prev) => !prev);
 
-  const formatDate = (date: Date) => date.toLocaleDateString(); // Format the date for display
+  const formatDate = (date: Date) => {
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1; // getMonth()는 0부터 시작하므로 +1 필요
+    const day = date.getDate();
+    
+    const mm = month < 10 ? `0${month}` : month;
+    const dd = day < 10 ? `0${day}` : day;
+
+    return `${year}-${mm}-${dd}`;
+}; // Format the date for display
 
   const validateDates = (start: Date, end: Date) => {
     if (end < start) {
