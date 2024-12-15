@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         marginBottom : 15
     },
     underline : {
-        borderWidth : 1.8,
+        borderWidth : 2,
         borderColor : "#000000",
         width : screenWidth * 0.95,
         alignSelf : 'center',

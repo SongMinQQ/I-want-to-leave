@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SelectDate from './SelectDate';
@@ -7,8 +7,8 @@ import { TripSchedule } from '../../types/types';
 import CustomInput from '../../utils/CustomInput';
 
 interface WriteTimelineProps {
-    startDate: Date;
-    endDate: Date;
+    startDate: string; // 문자열 타입
+    endDate: string;   // 문자열 타입
     setNewSchedule: React.Dispatch<React.SetStateAction<TripSchedule>>;
 }
 
@@ -21,14 +21,15 @@ type Timeline = {
 };
 
 const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNewSchedule }) => {
+    // startDate(문자열)을 Date 객체로 변환하여 초기화
+    const [selectedDate, setSelectedDate] = useState<Date>(new Date(startDate));
+    const [timelines, setTimelines] = useState<Timeline[]>([]); 
+
     const initializeTime = () => {
         const date = new Date();
         date.setHours(0, 0, 0, 0);
         return date;
     };
-
-    const [selectedDate, setSelectedDate] = useState<Date>(startDate); // 초기값을 startDate로 설정
-    const [timelines, setTimelines] = useState<Timeline[]>([]); 
 
     const handleDateSelection = (date: Date) => {
         setSelectedDate(date);
@@ -38,7 +39,7 @@ const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNe
             const existingDate = prev.schedule.find((item) => item.date === dateKey);
 
             if (existingDate) {
-                // 기존 타임라인을 현재 컴포넌트 스테이트에 설정
+                // 기존 타임라인을 컴포넌트 스테이트에 설정
                 const updatedTimelines = existingDate.timelines.map((timeline, index) => ({
                     id: index + 1,
                     time: new Date(timeline.time),
@@ -56,7 +57,7 @@ const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNe
     };
 
     const addNewTimeline = () => {
-        const newTimeline = {
+        const newTimeline: Timeline = {
             id: timelines.length + 1,
             time: initializeTime(),
             title: '',
@@ -72,7 +73,6 @@ const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNe
         );
     };
 
-    // selectedDate 또는 timelines 변화 시 상위 상태에 자동 저장
     useEffect(() => {
         saveToParent();
     }, [selectedDate, timelines]);
@@ -85,7 +85,6 @@ const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNe
             const updatedSchedule = [...prev.schedule];
             const dateIndex = updatedSchedule.findIndex((item) => item.date === dateKey);
     
-            // timelines는 이미 time이 Date 타입이므로 그대로 사용
             const convertedTimelines = timelines.map((tl) => ({
                 time: tl.time,
                 title: tl.title,
@@ -101,7 +100,6 @@ const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNe
             return { ...prev, schedule: updatedSchedule };
         });
     };
-    
 
     const renderTimelines = () => {
         return timelines.map((item) => (
@@ -114,6 +112,7 @@ const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNe
                         <Ionicons name="time-outline" size={20} color="#000000" />
                         <DatePicker
                             modal
+                            locale='ko'
                             open={item.isDatePickerVisible}
                             mode="time"
                             date={item.time}
@@ -154,7 +153,7 @@ const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNe
                 startDate={startDate}
                 endDate={endDate}
                 setNewSchedule={setNewSchedule}
-                onDateSelected={(date) => handleDateSelection(new Date(date))}
+                onDateSelected={(dateString) => handleDateSelection(new Date(dateString))}
             />
 
             {selectedDate ? (
@@ -173,7 +172,6 @@ const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNe
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         backgroundColor: '#fff',
         padding: 10,
     },

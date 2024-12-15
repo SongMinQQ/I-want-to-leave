@@ -36,10 +36,8 @@ const generateDateList = (start: Date, end: Date) => {
   let currentDate = setLocalMidnight(start);
   let endDate = setLocalMidnight(end);
 
-  // 종료 날짜까지 포함하기 위해 endDate를 기준으로 <= 비교
   while (currentDate <= endDate) {
     dateList.push(formatLocalDate(currentDate));
-    // 날짜를 1일씩 증가
     currentDate = new Date(
       currentDate.getFullYear(),
       currentDate.getMonth(),
@@ -50,24 +48,25 @@ const generateDateList = (start: Date, end: Date) => {
   return dateList;
 };
 
-
 interface SelectDateProps {
-  startDate: Date; // 시작 날짜
-  endDate: Date; // 종료 날짜
+  startDate: string; // 문자열 타입
+  endDate: string;   // 문자열 타입
   setNewSchedule: React.Dispatch<React.SetStateAction<TripSchedule>>;
   onDateSelected: (date: Date) => void;
 }
 
+const SelectDate: React.FC<SelectDateProps> = ({ startDate, endDate, onDateSelected }) => {
+  const [isModalVisible, setModalVisible] = useState<boolean>(false); 
+  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const [dateList, setDateList] = useState<string[]>([]); 
 
-
-const SelectDate: React.FC<SelectDateProps> = ({ startDate, endDate, onDateSelected}) => {
-  const [isModalVisible, setModalVisible] = useState<boolean>(false); // 모달 상태
-  const [selectedDate, setSelectedDate] = useState<string | null>(null); // 선택된 날짜
-  const [dateList, setDateList] = useState<string[]>([]); // 날짜 리스트
+  // 문자열을 Date 객체로 변환
+  const start = new Date(startDate);
+  const end = new Date(endDate);
 
   // 날짜 리스트 생성 및 첫 번째 날짜 자동 선택
   useEffect(() => {
-    const newList = generateDateList(startDate, endDate);
+    const newList = generateDateList(start, end);
     setDateList(newList);
     if (newList.length > 0) {
       setSelectedDate(newList[0]);
@@ -76,27 +75,23 @@ const SelectDate: React.FC<SelectDateProps> = ({ startDate, endDate, onDateSelec
 
   useEffect(() => {
     if (selectedDate) {
-      onDateSelected(new Date(selectedDate)); // selectedDate가 바뀌고 난 뒤에 호출
+      onDateSelected(new Date(selectedDate));
     }
   }, [selectedDate]);
-  // 날짜 선택 핸들러: 선택된 날짜를 상태에 저장하고 모달 닫기
+
+  // 날짜 선택 핸들러
   const handleSelectDate = (date: string) => {
     setSelectedDate(date);
-    // setNewSchedule((prev) => ({
-    //   ...prev,
-    //   startDate: new Date(date),
-    //   endDate: new Date(date), // 동일한 날짜를 시작과 종료 날짜로 설정
-    // }));
     onDateSelected(new Date(date));
-    setModalVisible(false); // 모달 닫기
+    setModalVisible(false);
   };
 
-  // 각 날짜 아이템을 렌더링하는 함수
+  // 각 날짜 아이템 렌더 함수
   const renderDateItem = (date: string) => (
     <TouchableOpacity
       style={[
         styles.dateItem,
-        selectedDate === date && styles.selectedDateItem, // 선택된 날짜 스타일 적용
+        selectedDate === date && styles.selectedDateItem
       ]}
       onPress={() => handleSelectDate(date)}
     >
@@ -107,22 +102,17 @@ const SelectDate: React.FC<SelectDateProps> = ({ startDate, endDate, onDateSelec
   return (
     <View style={styles.container}>
       <Text style={styles.title}>날짜 선택</Text>
-      {/* 선택된 날짜 표시 */}
       <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.calendarBtn}>
         <FontAwesome name='calendar-check-o' size={20} color={'#000000'}/>
         <CustomText> 선택한 날짜 : </CustomText>
-      
-      <CustomText style={styles.label}>{selectedDate || '없음'}</CustomText>
+        <CustomText style={styles.label}>{selectedDate || '없음'}</CustomText>
       </TouchableOpacity>
-      {/* 모달 열기 버튼 */}
-      
 
-      {/* 날짜 선택 모달 */}
       <Modal
         visible={isModalVisible}
         animationType="slide"
         transparent={true}
-        onRequestClose={() => setModalVisible(false)} // 뒤로 가기 버튼 눌렀을 때 모달 닫기
+        onRequestClose={() => setModalVisible(false)}
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
@@ -148,7 +138,6 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ddd',
   },
   calendarBtn: {
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center'
@@ -161,7 +150,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)', // 반투명 배경
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
     width: '80%',
@@ -180,15 +169,15 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
   },
   selectedDateItem: {
-    backgroundColor: '#70d7c7', // 선택된 날짜 배경색
+    backgroundColor: '#70d7c7',
   },
   dateText: {
     fontSize: 16,
   },
   title: {
-    fontSize: deviceWidth * 0.04, // Adjust title size based on the device width
-        color: "#000000",
-        fontWeight: 'bold'
+    fontSize: deviceWidth * 0.04,
+    color: "#000000",
+    fontWeight: 'bold'
   }
 });
 

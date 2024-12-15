@@ -6,8 +6,8 @@ export interface ScheduleItem {
   
   // Define the TripSchedule interface
 export interface TripSchedule {
-    startDate: Date; // Start date of the trip
-    endDate: Date;   // End date of the trip
+    startDate: string; // Start date of the trip
+    endDate: string;   // End date of the trip
     title: string;
     information: string;
     image: string[]; // Array of strings (image URLs or paths)
@@ -28,3 +28,13 @@ export interface TripSchedule {
     mypage: undefined,
     // 다른 라우트들 추가
   };
+
+export interface TravelInfo {
+  endDate: string;
+  imageUrl: string;
+  startDate: string;
+  travelCode: number;
+  travelContent: string;
+  travelName: string;
+  userNicknames: string[];
+}

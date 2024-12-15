@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { Dimensions, Platform, StyleSheet, Text, View } from 'react-native';
 import { googleLoginCheck } from '../../utils/utils';
+import { TravelInfo } from '../../types/types';
 
 const { width: screenWidth } = Dimensions.get('window');
 
-const UserInfoBox: React.FC = () => {
-    //사용자가 현재 여행이 있는지 유무
-    const [isTripSoon, setIsTripSoon] = useState(true);
+interface UserInfoBoxProps {
+    myTravels: TravelInfo[];
+  }
+
+const UserInfoBox: React.FC<UserInfoBoxProps> = ({ myTravels }) => {
 
     //구글 로그인 정보 가져오기
     const [profileInfo, setProfileInfo] = useState<any>(null);
@@ -19,9 +22,9 @@ const UserInfoBox: React.FC = () => {
     const showTripInfo= () => {
         return(
             <View style={styles.tripInfoTextWrap} >
-                <Text style={styles.tripInfoText}>여행지 : 여행지</Text>
-                <Text style={styles.tripInfoText}>예상 여행 경비 : n원</Text>
-                <Text style={[styles.tripInfoText, {alignSelf: 'center', marginTop: 5}]}>이곳을 터치해서 준비물을 확인하세요!</Text>
+                <Text style={styles.tripInfoText}>여행 제목 : {myTravels[0].travelName}</Text>
+                <Text style={styles.tripInfoText}>날짜 : {myTravels[0].startDate} ~ {myTravels[0].endDate}</Text>
+                <Text style={[styles.tripInfoText, {alignSelf: 'center', marginTop: 5}]}>이곳을 터치해서 여정을 확인하세요!</Text>
             </View>
         )
     }
@@ -33,7 +36,7 @@ const UserInfoBox: React.FC = () => {
             <View style={styles.tripCard}>
                 <Text style={styles.tripText}>곧 떠날 여행</Text>
                 <View style={styles.widthLine}/>
-                {isTripSoon ? showTripInfo() : <Text style={styles.tripInfoText}>떠날 여행이 없어요... 지금 바로 여행 계획을 세워보세요!</Text>}
+                {myTravels.length > 0 ? showTripInfo() : <Text style={styles.tripInfoText}>떠날 여행이 없어요... 지금 바로 여행 계획을 세워보세요!</Text>}
             </View>
         </View>
     );
@@ -65,7 +68,8 @@ const styles = StyleSheet.create({
         padding: 20,
         width: screenWidth - 90,
         alignSelf: 'center',
-        height: 145
+        height: 145,
+        // justifyContent: 'center'
     },
     helloText: {
         // paddingTop: 20,
@@ -93,7 +97,7 @@ const styles = StyleSheet.create({
     },
     tripInfoText : {
         fontSize: 12,
-        color: "#000000"
+        color: "#000000",
     },
     tripInfoTextWrap: {
         gap: 6

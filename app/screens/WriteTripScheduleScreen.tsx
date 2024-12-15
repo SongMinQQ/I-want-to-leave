@@ -31,18 +31,18 @@ const pages = [
     ]
 ];
 
-const getKoreaMidnightDate = () => {
+const getKoreaMidnightDateISO = () => {
     const now = new Date();
-    // 현재 시간을 UTC로 변환 (ms 단위)
-    const utcTime = now.getTime() + (now.getTimezoneOffset() * 60 * 1000);
-    // KST(UTC+9)로 변환
-    const kstTime = utcTime + (9 * 60 * 60 * 1000);
+    const utcTime = now.getTime() + now.getTimezoneOffset() * 60 * 1000;
+    const kstTime = utcTime + 9 * 60 * 60 * 1000;
     const kstDate = new Date(kstTime);
-
-    // 해당 날짜를 자정(00:00:00)으로 설정
     kstDate.setHours(0, 0, 0, 0);
 
-    return kstDate;
+    // KST 기준 yyyy-MM-ddT00:00:00+09:00 형태로 포맷팅
+    const year = kstDate.getFullYear();
+    const month = String(kstDate.getMonth() + 1).padStart(2, '0');
+    const day = String(kstDate.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}T00:00:00.000`;
 };
 
 const WriteTripScheduleScreen: React.FC = () => {
@@ -51,8 +51,8 @@ const WriteTripScheduleScreen: React.FC = () => {
     const [currentPage, setCurrentPage] = useState<number>(0);
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const [newSchedule, setNewSchedule] = useState<TripSchedule>({
-        startDate: getKoreaMidnightDate(),
-        endDate: getKoreaMidnightDate(),
+        startDate: getKoreaMidnightDateISO(),
+        endDate: getKoreaMidnightDateISO(),
         title: '',
         information: '',
         image: [],
@@ -60,9 +60,9 @@ const WriteTripScheduleScreen: React.FC = () => {
         schedule: []
     });
 
-    // useEffect(()=> {
-    //     console.log(newSchedule.schedule[0]?.timelines);
-    // }, [newSchedule]);
+    useEffect(()=> {
+        console.log(newSchedule);
+    }, [newSchedule]);
     useEffect(() => {
         // 키보드 이벤트 리스너 추가
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {

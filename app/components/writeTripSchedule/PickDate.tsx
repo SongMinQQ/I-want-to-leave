@@ -5,42 +5,60 @@ import { TripSchedule } from '../../types/types';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import CustomText from '../../utils/CustomText';
 
-// Get device width
 const { width: deviceWidth } = Dimensions.get('window');
 
 interface PickDateProps {
-  startDate: Date; // 부모 컴포넌트에서 전달되는 시작 날짜
-  endDate: Date; 
+  startDate: string; // string 형식의 시작 날짜 (ISO 형식 가정)
+  endDate: string;   // string 형식의 종료 날짜 (ISO 형식 가정)
   setNewSchedule: React.Dispatch<React.SetStateAction<TripSchedule>>;
 }
 
+// 문자열을 Date로 파싱하는 헬퍼 함수
+const parseDateStringToDate = (dateStr: string): Date => {
+  return new Date(dateStr);
+};
+
+// Date 객체를 서버가 원하는 ISO 형태로 (YYYY-MM-DDT00:00:00) 변환하는 헬퍼 함수
+const dateToServerFormat = (date: Date): string => {
+  const adjustedDate = new Date(date);
+  adjustedDate.setHours(0, 0, 0, 0);
+
+  const year = adjustedDate.getFullYear();
+  const month = String(adjustedDate.getMonth() + 1).padStart(2, '0');
+  const day = String(adjustedDate.getDate()).padStart(2, '0');
+
+  return `${year}-${month}-${day}T00:00:00`;
+};
 
 const PickDate: React.FC<PickDateProps> = ({ startDate, endDate, setNewSchedule }) => {
-  const kstStartDate = new Date(new Date(startDate).getTime());
-  const [isDayTrip, setIsDayTrip] = useState<boolean>(true); // Day trip toggle
+  const initialStartDate = parseDateStringToDate(startDate);
+  const initialEndDate = parseDateStringToDate(endDate);
+
+  const [isDayTrip, setIsDayTrip] = useState<boolean>(true);
   const [openStartDate, setOpenStartDate] = useState<boolean>(false);
   const [openEndDate, setOpenEndDate] = useState<boolean>(false);
-  const [pickStartDate, setPickStartDate] = useState<Date>(kstStartDate);
-  const [pickEndDate, setPickEndDate] = useState<Date>(endDate);
+  const [pickStartDate, setPickStartDate] = useState<Date>(initialStartDate);
+  const [pickEndDate, setPickEndDate] = useState<Date>(initialEndDate);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    setIsDayTrip(startDate.toDateString() === endDate.toDateString());
-    console.log(formatDate(pickStartDate))
+    const sDate = parseDateStringToDate(startDate);
+    const eDate = parseDateStringToDate(endDate);
+    setIsDayTrip(sDate.toDateString() === eDate.toDateString());
   }, [startDate, endDate]);
 
   const toggleDayTrip = () => setIsDayTrip((prev) => !prev);
 
   const formatDate = (date: Date) => {
     const year = date.getFullYear();
-    const month = date.getMonth() + 1; // getMonth()는 0부터 시작하므로 +1 필요
+    const month = date.getMonth() + 1; 
     const day = date.getDate();
     
     const mm = month < 10 ? `0${month}` : month;
     const dd = day < 10 ? `0${day}` : day;
 
     return `${year}-${mm}-${dd}`;
-}; // Format the date for display
+  };
 
   const validateDates = (start: Date, end: Date) => {
     if (end < start) {
@@ -48,7 +66,7 @@ const PickDate: React.FC<PickDateProps> = ({ startDate, endDate, setNewSchedule 
       Alert.alert("유효성 오류", "종료 날짜는 시작 날짜보다 뒤에 있어야 합니다.");
       return false;
     }
-    setError(null); // Clear the error if dates are valid
+    setError(null);
     return true;
   };
 
@@ -87,25 +105,37 @@ const PickDate: React.FC<PickDateProps> = ({ startDate, endDate, setNewSchedule 
       <DatePicker
         modal
         mode='date'
+        locale='ko'
         open={openStartDate}
         date={pickStartDate}
         onConfirm={(selectedDate) => {
-          setOpenStartDate(false); // 모달을 닫음
-          setPickStartDate(selectedDate);
-      
-          // 종료 날짜보다 뒤일 경우 종료 날짜도 업데이트
+          setOpenStartDate(false);
+
+          // 시작 날짜 선택
+          let updatedEndDate = pickEndDate;
           if (selectedDate > pickEndDate) {
-            setPickEndDate(selectedDate);
+            // 시작 날짜가 종료 날짜보다 늦은 경우 종료 날짜를 시작 날짜로 맞춤
+            updatedEndDate = selectedDate;
+            setPickEndDate(updatedEndDate);
           }
-      
+          
+          // 유효성 검사 (당일치기인 경우 엔드데이트는 스타트데이트와 동일하므로 검사 불필요)
+          if (!isDayTrip) {
+            if (!validateDates(selectedDate, updatedEndDate)) {
+              return;
+            }
+          }
+
+          setPickStartDate(selectedDate);
+
           setNewSchedule((prevSchedule) => ({
             ...prevSchedule,
-            startDate: selectedDate,
-            endDate: isDayTrip || selectedDate > pickEndDate ? selectedDate : prevSchedule.endDate, 
+            startDate: dateToServerFormat(selectedDate),
+            endDate: isDayTrip || selectedDate > pickEndDate ? dateToServerFormat(selectedDate) : dateToServerFormat(updatedEndDate), 
           }));
         }}
         onCancel={() => {
-          setOpenStartDate(false); // 모달을 닫음
+          setOpenStartDate(false);
         }}
       />
 
@@ -119,13 +149,17 @@ const PickDate: React.FC<PickDateProps> = ({ startDate, endDate, setNewSchedule 
           date={pickEndDate}
           onConfirm={(selectedDate) => {
             setOpenEndDate(false);
-            if (validateDates(pickStartDate, selectedDate)) {
-              setPickEndDate(selectedDate);
-              setNewSchedule((prevSchedule) => ({
-                ...prevSchedule,
-                endDate: selectedDate, // Update pickEndDate if valid
-              }));
+
+            // 유효성 검사
+            if (!validateDates(pickStartDate, selectedDate)) {
+              return; // 유효하지 않으면 종료 날짜 업데이트 안 함
             }
+
+            setPickEndDate(selectedDate);
+            setNewSchedule((prevSchedule) => ({
+              ...prevSchedule,
+              endDate: dateToServerFormat(selectedDate),
+            }));
           }}
           onCancel={() => {
             setOpenEndDate(false);
@@ -138,18 +172,18 @@ const PickDate: React.FC<PickDateProps> = ({ startDate, endDate, setNewSchedule 
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'column', // Stack elements vertically
-    paddingHorizontal: deviceWidth * 0.05, // 5% of the device width for padding
+    flexDirection: 'column',
+    paddingHorizontal: deviceWidth * 0.05,
     paddingTop: 15
   },
   topArea: {
     flexDirection: 'row',
-    justifyContent: 'space-between', // Space between "여행 날짜" and the switch
+    justifyContent: 'space-between', 
     alignItems: 'center',
     marginBottom: 10,
   },
   title: {
-    fontSize: deviceWidth * 0.05, // Adjust title size based on the device width
+    fontSize: deviceWidth * 0.05,
     color: "#000000",
     fontWeight: 'bold'
   },
@@ -158,26 +192,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   dayTripText: {
-    marginRight: deviceWidth * 0.02, // Space between text and switch
-    fontSize: deviceWidth * 0.04, // Adjust text size
+    marginRight: deviceWidth * 0.02, 
+    fontSize: deviceWidth * 0.04,
     color: '#000000'
   },
   dateContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    // justifyContent: 'center', // Center date pickers
-    // flex: 1, // Take up remaining space
   },
   dateText: {
-    marginLeft: deviceWidth * 0.02, // 2% of device width for margin
-    marginRight: deviceWidth * 0.03, // 3% of device width for margin
-    fontSize: deviceWidth * 0.04, // Adjust text size relative to the device width
+    marginLeft: deviceWidth * 0.02, 
+    marginRight: deviceWidth * 0.03, 
+    fontSize: deviceWidth * 0.04,
     borderColor: "#000000",
     borderWidth: 1,
   },
   separator: {
-    marginHorizontal: deviceWidth * 0.02, // 2% of device width for margin between elements
-    // fontSize: deviceWidth * 0.045, // Adjust separator size
+    marginHorizontal: deviceWidth * 0.02,
   },
 });
 
