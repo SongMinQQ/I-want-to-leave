@@ -1,12 +1,14 @@
 import React from 'react';
 import { ImageBackground, View, Text, StyleSheet, TouchableOpacity } from 'react-native';
-import { TravelInfo } from '../../types/types';
+import { RootStackParamList, TravelInfo } from '../../types/types';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 interface MytravelProps {
     myTravels: TravelInfo;
 }
 
 const Mytravel: React.FC<MytravelProps> = ({ myTravels }) => {
+    const navigation = useNavigation<NavigationProp<RootStackParamList>>();
     const {
         endDate,
         imageUrl,
@@ -16,10 +18,12 @@ const Mytravel: React.FC<MytravelProps> = ({ myTravels }) => {
         travelName,
         userNicknames,
     } = myTravels;
-
+    const goToTravelDetail = () => {
+        navigation.navigate("TravelDetailNavigation",{travelCode});
+    }
     return (
         <View style={styles.container}>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={goToTravelDetail}>
                 <ImageBackground source={{ uri: imageUrl }} style={styles.image} imageStyle={styles.imageStyle}>
                     {/* 반투명 오버레이 */}
                     <View style={styles.overlay} />

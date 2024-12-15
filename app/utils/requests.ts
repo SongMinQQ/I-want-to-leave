@@ -11,6 +11,7 @@ export const urls = {
     login : `${localServer}/login`,
     googleLogin: `${localServer}/oauth2/authorization/Google`,
     generateSchedule: `${localServer}/schedule/initialize`,
-    getTravelInfo: `${localServer}/mypage/travel-info`, 
+    getTravelInfo: `${localServer}/mypage/travel-info`,
+    getTravelDetail: `${localServer}/schedule/`
 }
 
