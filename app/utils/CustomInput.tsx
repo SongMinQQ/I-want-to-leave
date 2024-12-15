@@ -18,6 +18,7 @@ const CustomInput: React.FC<CustomInputProps> = ({ style, placeholderTextColor, 
 const styles = StyleSheet.create({
   input: {
     // 여기서 기본적인 스타일 지정 가능 (예: fontSize: 16)
+    color: "#000000"
   },
 });
 

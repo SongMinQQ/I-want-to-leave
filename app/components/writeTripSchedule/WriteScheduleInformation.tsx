@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Dimensions, StyleSheet, Text, TextInput, View } from 'react-native';
 import { TripSchedule } from '../../types/types';
 import CustomInput from '../../utils/CustomInput';
+import CustomText from '../../utils/CustomText';
 
 interface WriteScheduleProps {
     setNewSchedule: React.Dispatch<React.SetStateAction<TripSchedule>>;
@@ -28,7 +29,7 @@ const WriteScheduleInformation: React.FC<WriteScheduleProps> = ({setNewSchedule}
                 <Text style={styles.title}>
                     여행 설명
                 </Text>
-                <Text>{information.length}/40</Text>
+                <CustomText>{information.length}/40</CustomText>
             </View>
             <CustomInput 
             placeholder="여행 설명을 입력하세요(최대 40자)"
