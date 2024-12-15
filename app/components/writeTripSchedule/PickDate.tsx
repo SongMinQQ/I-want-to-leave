@@ -3,6 +3,7 @@ import { View, Text, Switch, TouchableOpacity, StyleSheet, Dimensions, Alert } f
 import DatePicker from 'react-native-date-picker';
 import { TripSchedule } from '../../types/types';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import CustomText from '../../utils/CustomText';
 
 // Get device width
 const { width: deviceWidth } = Dimensions.get('window');
@@ -68,7 +69,7 @@ const PickDate: React.FC<PickDateProps> = ({ startDate, endDate, setNewSchedule 
         <TouchableOpacity onPress={() => setOpenStartDate(true)}>
           <AntDesign name='calendar' size={deviceWidth * 0.05} color={'#000000'} />
         </TouchableOpacity>
-        <Text style={styles.dateText}> {formatDate(pickStartDate)} </Text>
+        <CustomText style={styles.dateText}> {formatDate(pickStartDate)} </CustomText>
 
         {/* Date Range Separator or End Date Picker */}
         {!isDayTrip && (
@@ -77,7 +78,7 @@ const PickDate: React.FC<PickDateProps> = ({ startDate, endDate, setNewSchedule 
             <TouchableOpacity onPress={() => setOpenEndDate(true)}>
               <AntDesign name='calendar' size={deviceWidth * 0.05} color={'#000000'} />
             </TouchableOpacity>
-            <Text style={styles.dateText}> {formatDate(pickEndDate)} </Text>
+            <CustomText style={styles.dateText}> {formatDate(pickEndDate)} </CustomText>
           </>
         )}
       </View>

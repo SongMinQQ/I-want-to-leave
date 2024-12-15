@@ -92,7 +92,8 @@ const styles = StyleSheet.create({
         paddingBottom: 10
     },
     tripInfoText : {
-        fontSize: 12
+        fontSize: 12,
+        color: "#000000"
     },
     tripInfoTextWrap: {
         gap: 6

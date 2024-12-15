@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import DatePicker from 'react-native-date-picker';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SelectDate from './SelectDate';
 import { TripSchedule } from '../../types/types';
+import CustomInput from '../../utils/CustomInput';
 
 interface WriteTimelineProps {
     startDate: Date;
@@ -28,27 +29,28 @@ const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNe
 
     const [selectedDate, setSelectedDate] = useState<Date>(startDate); // 초기값을 startDate로 설정
     const [timelines, setTimelines] = useState<Timeline[]>([]); 
-    const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
     const handleDateSelection = (date: Date) => {
         setSelectedDate(date);
-    
+
         setNewSchedule((prev) => {
             const dateKey = date.toISOString().split('T')[0]; // YYYY-MM-DD 형식
             const existingDate = prev.schedule.find((item) => item.date === dateKey);
-    
+
             if (existingDate) {
-                // 기존 타임라인에 `isDatePickerVisible` 추가
-                const updatedTimelines = existingDate.timelines.map((timeline) => ({
-                    ...timeline,
-                    isDatePickerVisible: false, // 기본값 추가
+                // 기존 타임라인을 현재 컴포넌트 스테이트에 설정
+                const updatedTimelines = existingDate.timelines.map((timeline, index) => ({
+                    id: index + 1,
+                    time: new Date(timeline.time),
+                    title: timeline.title,
+                    content: timeline.content,
+                    isDatePickerVisible: false,
                 }));
                 setTimelines(updatedTimelines);
             } else {
                 // 새로운 날짜의 타임라인 초기화
                 setTimelines([]);
             }
-    
             return prev; // 상태 유지
         });
     };
@@ -59,7 +61,7 @@ const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNe
             time: initializeTime(),
             title: '',
             content: '',
-            isDatePickerVisible: false, // 추가
+            isDatePickerVisible: false,
         };
         setTimelines((prev) => [...prev, newTimeline]);
     };
@@ -70,22 +72,36 @@ const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNe
         );
     };
 
-    const saveToParent = () => {
-        const dateKey = selectedDate.toISOString().split('T')[0]; // YYYY-MM-DD 형식
+    // selectedDate 또는 timelines 변화 시 상위 상태에 자동 저장
+    useEffect(() => {
+        saveToParent();
+    }, [selectedDate, timelines]);
 
+    const saveToParent = () => {
+        if (!selectedDate) return;
+        const dateKey = selectedDate.toISOString().split('T')[0]; // YYYY-MM-DD 형식
+    
         setNewSchedule((prev) => {
             const updatedSchedule = [...prev.schedule];
             const dateIndex = updatedSchedule.findIndex((item) => item.date === dateKey);
-
+    
+            // timelines는 이미 time이 Date 타입이므로 그대로 사용
+            const convertedTimelines = timelines.map((tl) => ({
+                time: tl.time,
+                title: tl.title,
+                content: tl.content,
+            }));
+    
             if (dateIndex !== -1) {
-                updatedSchedule[dateIndex].timelines = timelines;
+                updatedSchedule[dateIndex].timelines = convertedTimelines;
             } else {
-                updatedSchedule.push({ date: dateKey, timelines: [...timelines] });
+                updatedSchedule.push({ date: dateKey, timelines: convertedTimelines });
             }
-
+    
             return { ...prev, schedule: updatedSchedule };
         });
     };
+    
 
     const renderTimelines = () => {
         return timelines.map((item) => (
@@ -115,15 +131,15 @@ const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNe
                         </Text>
                     </View>
                 </TouchableOpacity>
-    
+
                 <Text style={styles.textStyle}>일정 제목</Text>
-                <TextInput
+                <CustomInput
                     style={styles.inputStyle}
                     value={item.title}
                     onChangeText={(text) => updateTimeline(item.id, 'title', text)}
                 />
                 <Text style={styles.textStyle}>일정 내용</Text>
-                <TextInput
+                <CustomInput
                     style={styles.inputStyle}
                     value={item.content}
                     onChangeText={(text) => updateTimeline(item.id, 'content', text)}
@@ -146,9 +162,6 @@ const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNe
                     {renderTimelines()}
                     <TouchableOpacity style={styles.addButton} onPress={addNewTimeline}>
                         <Text style={styles.addButtonText}>+ 추가</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.saveButton} onPress={saveToParent}>
-                        <Text style={styles.saveButtonText}>저장</Text>
                     </TouchableOpacity>
                 </>
             ) : (
@@ -194,17 +207,6 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     addButtonText: {
-        color: '#fff',
-        fontSize: 18,
-    },
-    saveButton: {
-        backgroundColor: '#28a745',
-        borderRadius: 10,
-        paddingVertical: 10,
-        alignItems: 'center',
-        marginTop: 10,
-    },
-    saveButtonText: {
         color: '#fff',
         fontSize: 18,
     },

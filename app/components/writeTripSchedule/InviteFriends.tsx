@@ -1,6 +1,7 @@
 import React from 'react';
 import { Dimensions, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import EvilIcons from 'react-native-vector-icons/EvilIcons';
+import CustomInput from '../../utils/CustomInput';
 
 const { width: deviceWidth } = Dimensions.get('window');
 
@@ -9,7 +10,7 @@ const InviteFriends: React.FC = () => {
         <View style={styles.container}>
             <Text style={styles.title}>친구 초대하기</Text>
             <View style={styles.searchArea}>
-                <TextInput placeholder='친구의 이메일 주소를 입력하세요.(최대 4명)' style={styles.input}/>
+                <CustomInput placeholder='친구의 이메일 주소를 입력하세요.(최대 4명)' style={styles.input}/>
                 <TouchableOpacity>
                     <EvilIcons name='search' size={20} color={'#000000'}/>
                 </TouchableOpacity>

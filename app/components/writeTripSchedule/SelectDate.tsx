@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { TripSchedule } from '../../types/types';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import CustomText from '../../utils/CustomText';
 
 const { width: deviceWidth } = Dimensions.get('window');
 
@@ -70,10 +71,14 @@ const SelectDate: React.FC<SelectDateProps> = ({ startDate, endDate, onDateSelec
     setDateList(newList);
     if (newList.length > 0) {
       setSelectedDate(newList[0]);
-      onDateSelected(new Date(newList[0]));
     }
   }, [startDate, endDate]);
 
+  useEffect(() => {
+    if (selectedDate) {
+      onDateSelected(new Date(selectedDate)); // selectedDate가 바뀌고 난 뒤에 호출
+    }
+  }, [selectedDate]);
   // 날짜 선택 핸들러: 선택된 날짜를 상태에 저장하고 모달 닫기
   const handleSelectDate = (date: string) => {
     setSelectedDate(date);
@@ -103,12 +108,14 @@ const SelectDate: React.FC<SelectDateProps> = ({ startDate, endDate, onDateSelec
     <View style={styles.container}>
       <Text style={styles.title}>날짜 선택</Text>
       {/* 선택된 날짜 표시 */}
-      <Text style={styles.label}>선택된 날짜: {selectedDate || '없음'}</Text>
-      {/* 모달 열기 버튼 */}
       <TouchableOpacity onPress={() => setModalVisible(true)} style={styles.calendarBtn}>
         <FontAwesome name='calendar-check-o' size={20} color={'#000000'}/>
-        <Text>날짜 선택</Text>
+        <CustomText> 선택한 날짜 : </CustomText>
+      
+      <CustomText style={styles.label}>{selectedDate || '없음'}</CustomText>
       </TouchableOpacity>
+      {/* 모달 열기 버튼 */}
+      
 
       {/* 날짜 선택 모달 */}
       <Modal

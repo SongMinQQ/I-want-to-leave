@@ -1,5 +1,6 @@
 import React from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
+import CustomText from '../../utils/CustomText';
 
 interface Comment {
     commentCode: number;
@@ -23,9 +24,9 @@ const MyComment: React.FC<MyCommentProps> = ({item}) => {
     } = item;
     return (
         <TouchableOpacity>
-            <Text>{postTitle}</Text>
-            <Text>{timestamp}</Text>
-            <Text>{content}</Text>
+            <CustomText>{postTitle}</CustomText>
+            <CustomText>{timestamp}</CustomText>
+            <CustomText>{content}</CustomText>
         </TouchableOpacity>
     );
 };

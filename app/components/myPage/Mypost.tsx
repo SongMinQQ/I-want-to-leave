@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { Image, Text, View } from 'react-native';
+import CustomText from '../../utils/CustomText';
 
 interface Post {
     title: string;
@@ -24,10 +25,10 @@ const Mypost: React.FC<MypostProps> = ({item}) => {
 
     return (
         <View>
-            <Text>{title}</Text>
-            <Text>여행한 날 : {startDate} ~ {endDate}</Text>
+            <CustomText>{title}</CustomText>
+            <CustomText>여행한 날 : {startDate} ~ {endDate}</CustomText>
             <Image source={{uri: image[0] || "https://via.placeholder.com/100"}}/>
-            <Text>{content}</Text>
+            <CustomText>{content}</CustomText>
         </View>
     );
 };

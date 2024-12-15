@@ -1,5 +1,5 @@
 import React, { useState, useEffect, Component } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View, Keyboard, Dimensions } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View, Keyboard, Dimensions, Alert } from 'react-native';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import PickDate from '../components/writeTripSchedule/PickDate';
 import WriteScheduleTitle from '../components/writeTripSchedule/WriteScheduleTitle';
@@ -9,12 +9,13 @@ import InviteFriends from '../components/writeTripSchedule/InviteFriends';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import SelectDate from '../components/writeTripSchedule/SelectDate';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import { TripSchedule } from '../types/types';
+import { RootStackParamList, TripSchedule } from '../types/types';
 import WriteTimeline from '../components/writeTripSchedule/WriteTimeline';
 import axios from 'axios';
 import { urls } from '../utils/requests';
 import { useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
 
 const pages = [
     [
@@ -45,6 +46,8 @@ const getKoreaMidnightDate = () => {
 };
 
 const WriteTripScheduleScreen: React.FC = () => {
+    const navigaton = useNavigation<NavigationProp<RootStackParamList>>();
+
     const [currentPage, setCurrentPage] = useState<number>(0);
     const [isKeyboardVisible, setKeyboardVisible] = useState(false);
     const [newSchedule, setNewSchedule] = useState<TripSchedule>({
@@ -97,11 +100,13 @@ const WriteTripScheduleScreen: React.FC = () => {
                 Authorization : token,
                 'Content-Type': 'application/json',
             }})
-            console.log(response);
+            console.log(response.status);
+            if(response.status === 200){
+                navigaton.navigate('mypage');
+            } 
         }
         catch(err){
             console.error(err);
-            
         }
     }
     return (
@@ -143,7 +148,7 @@ const WriteTripScheduleScreen: React.FC = () => {
                     
                     <TouchableOpacity
                         style={[styles.levelBtn, styles.rightBtn]}
-                        onPress={goNextPage}
+                        onPress={currentPage < pages.length - 1 ? goNextPage : generateTripSchedule}
                     >
                         <Text style={styles.btnText}>
                             {currentPage < pages.length - 1 ? '다음' : '계획 작성'}
@@ -151,7 +156,7 @@ const WriteTripScheduleScreen: React.FC = () => {
                         {currentPage < pages.length - 1 ? (
                             <MaterialIcons name="arrow-forward-ios" size={35} color="#000000" />
                         ) : (
-                            <MaterialCommunityIcons name='pencil-plus' size={35} color="#000000" onPress={generateTripSchedule}/>
+                            <MaterialCommunityIcons name='pencil-plus' size={35} color="#000000" />
                         )}
                     </TouchableOpacity>
                 </View>

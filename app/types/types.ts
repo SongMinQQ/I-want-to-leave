@@ -14,7 +14,7 @@ export interface TripSchedule {
     member: string[]; // Array of member names
     schedule: { 
       date: string; 
-      timelines: { id: number; time: Date; title: string; content: string }[] 
+      timelines: { time: Date; title: string; content: string }[] 
     }[]; // Array of ScheduleItem objects
   }
 
@@ -24,6 +24,7 @@ export interface TripSchedule {
     ImageSelect: undefined;
     SelectScheduleImage: undefined;
     GoogleLogin: { loginuri: string };
-    Main: undefined
+    Main: undefined,
+    mypage: undefined,
     // 다른 라우트들 추가
   };

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ActivityIndicator, Dimensions, Image, Platform, StyleSheet, Text, View } from 'react-native';
 import { googleLoginCheck } from '../../utils/utils';
 import LogoutButton from './LogoutButton';
+import CustomText from '../../utils/CustomText';
 
 const { width: deviceWidth } = Dimensions.get('window');
 
@@ -26,9 +27,9 @@ const MyProfile: React.FC = () => {
             
             {/* User Info */}
             <View style={styles.userInfoArea}>
-                <View><Text>글</Text><Text>num</Text></View>
-                <View><Text>댓글</Text><Text>num</Text></View>
-                <View><Text>여행</Text><Text>num</Text></View>
+                <View ><CustomText>글</CustomText><CustomText>num</CustomText></View>
+                <View><CustomText>댓글</CustomText><CustomText>num</CustomText></View>
+                <View><CustomText>여행</CustomText><CustomText>num</CustomText></View>
             </View>
             <LogoutButton/>
         </View>

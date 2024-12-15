@@ -3,16 +3,19 @@ import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native';
 import MyProfile from '../components/myPage/MyProfile';
 import MyPostsAndComments from '../navigation/MyPostsAndComments';
 
-const { width: screenWidth } = Dimensions.get('window');
+const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 const ProfileScreen: React.FC = () => {
     return (
-        <View style={styles.screen}>
+        <ScrollView style={styles.screen}>
             <MyProfile/>
             <Text style={styles.fontStyle}>내 작성글</Text>
             <View style={styles.underline}/>
-            <MyPostsAndComments/>
-        </View>
+            {/* 기기 높이의 1.5배를 예시로 사용 */}
+            <View style={{ minHeight: screenHeight * 0.6 }}>
+                <MyPostsAndComments/>
+            </View>
+        </ScrollView>
     );
 };
 
@@ -36,5 +39,6 @@ const styles = StyleSheet.create({
         alignSelf : 'center',
         marginBottom: 5
     }
-})
+});
+
 export default ProfileScreen;

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Dimensions, StyleSheet, Text, TextInput, View } from 'react-native';
 import { TripSchedule } from '../../types/types';
+import CustomInput from '../../utils/CustomInput';
 
 interface WriteScheduleProps {
     setNewSchedule: React.Dispatch<React.SetStateAction<TripSchedule>>;
@@ -29,7 +30,7 @@ const WriteScheduleTitle: React.FC<WriteScheduleProps> = ({setNewSchedule}) => {
                 </Text>
                 <Text>{title.length}/20</Text>
             </View>
-            <TextInput 
+            <CustomInput 
             placeholder="여행 제목을 입력하세요(최대 20자)"
             value={title}
             onChangeText={handleTitleChange} // Call the handler on text change
