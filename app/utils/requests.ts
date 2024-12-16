@@ -12,6 +12,9 @@ export const urls = {
     googleLogin: `${localServer}/oauth2/authorization/Google`,
     generateSchedule: `${localServer}/schedule/initialize`,
     getTravelInfo: `${localServer}/mypage/travel-info`,
-    getTravelDetail: `${localServer}/schedule/`
+    getTravelDetail: `${localServer}/schedule/`,
+    profilePostInfo: `${localServer}/mypage/post-info`,
+    profileCommentInfo: `${localServer}/mypage/comment-info`,
+    profileTravelInfo: `${localServer}/mypage/travel-info`,
 }
 

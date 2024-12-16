@@ -14,7 +14,7 @@ export interface TripSchedule {
     member: string[]; // Array of member names
     schedule: { 
       date: string; 
-      timelines: { time: Date; title: string; content: string }[] 
+      timelines: { time: Date; title: string; description: string }[] 
     }[]; // Array of ScheduleItem objects
   }
 
@@ -40,7 +40,7 @@ export interface TravelInfo {
   userNicknames: string[];
 }
 
-interface Schedule {
+export interface Schedule {
   date: string; // e.g., "2024-12-15"
   timeLines: any[]; // Replace `any` with the specific type if known
 }

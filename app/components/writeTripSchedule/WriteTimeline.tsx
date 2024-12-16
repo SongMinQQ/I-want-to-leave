@@ -16,7 +16,7 @@ type Timeline = {
     id: number;
     time: Date;
     title: string;
-    content: string;
+    description: string;
     isDatePickerVisible: boolean;
 };
 
@@ -44,7 +44,7 @@ const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNe
                     id: index + 1,
                     time: new Date(timeline.time),
                     title: timeline.title,
-                    content: timeline.content,
+                    description: timeline.description,
                     isDatePickerVisible: false,
                 }));
                 setTimelines(updatedTimelines);
@@ -61,7 +61,7 @@ const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNe
             id: timelines.length + 1,
             time: initializeTime(),
             title: '',
-            content: '',
+            description: '',
             isDatePickerVisible: false,
         };
         setTimelines((prev) => [...prev, newTimeline]);
@@ -88,7 +88,7 @@ const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNe
             const convertedTimelines = timelines.map((tl) => ({
                 time: tl.time,
                 title: tl.title,
-                content: tl.content,
+                description: tl.description,
             }));
     
             if (dateIndex !== -1) {
@@ -140,7 +140,7 @@ const WriteTimeline: React.FC<WriteTimelineProps> = ({ startDate, endDate, setNe
                 <Text style={styles.textStyle}>일정 내용</Text>
                 <CustomInput
                     style={styles.inputStyle}
-                    value={item.content}
+                    value={item.description}
                     onChangeText={(text) => updateTimeline(item.id, 'content', text)}
                 />
             </View>

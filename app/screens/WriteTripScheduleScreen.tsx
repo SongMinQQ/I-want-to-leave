@@ -93,8 +93,10 @@ const WriteTripScheduleScreen: React.FC = () => {
 
     const token = useSelector((state: RootState) => state.getToken.token);
     const generateTripSchedule = async() => {
-        console.log(token);
-        
+        if(newSchedule.schedule.length === 0){
+            Alert.alert("일정이 없어요","일정을 작성해 주세요");
+            return;
+        } 
         try{
             const response = await axios.post(urls.generateSchedule,newSchedule,{headers:{
                 Authorization : token,

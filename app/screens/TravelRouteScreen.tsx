@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View } from 'react-native';
 import { travelDetail } from '../types/types';
 
@@ -20,6 +20,9 @@ const TravelRouteScreen: React.FC<TravelRouteScreenProps> = ({travelDetail}) => 
         travelCode,// e.g., 34
         usernames,
     } = travelDetail;
+    useEffect(() => {
+        console.log(schedule[0]?.timeLines[0]);
+    },[travelDetail]);
     return (
         <View>
             
