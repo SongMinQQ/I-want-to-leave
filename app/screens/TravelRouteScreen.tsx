@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react';
-import { View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { travelDetail } from '../types/types';
+import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 
 interface TravelRouteScreenProps {
     travelDetail: travelDetail;
 }
-const TravelRouteScreen: React.FC<TravelRouteScreenProps> = ({travelDetail}) => {
+const TravelRouteScreen: React.FC<TravelRouteScreenProps> = ({ travelDetail }) => {
     const {
         createdAt, // e.g., "2024-12-15T16:16:26.000+00:00"
         deletedAt, // e.g., null or "2024-12-15T16:16:26.000+00:00"
@@ -20,14 +21,28 @@ const TravelRouteScreen: React.FC<TravelRouteScreenProps> = ({travelDetail}) => 
         travelCode,// e.g., 34
         usernames,
     } = travelDetail;
-    useEffect(() => {
-        console.log(schedule[0]?.timeLines[0]);
-    },[travelDetail]);
+
     return (
         <View>
-            
+            <MapView
+                provider={PROVIDER_GOOGLE}
+                initialRegion={{
+                    latitude: 37.541,
+                    longitude: 126.986,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                }}
+                style={styles.map}
+            />
         </View>
     );
 };
+
+const styles = StyleSheet.create({
+    map: {
+        height: "100%",
+        width: "100%"
+    }
+});
 
 export default TravelRouteScreen;
