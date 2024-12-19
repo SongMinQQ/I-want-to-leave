@@ -4,6 +4,8 @@
 # environment variable
 .env
 # Xcode
+# google api key
+android/app/src/main/res/values/google_maps_api
 #
 build/
 *.pbxuser

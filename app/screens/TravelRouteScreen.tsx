@@ -27,8 +27,8 @@ const TravelRouteScreen: React.FC<TravelRouteScreenProps> = ({ travelDetail }) =
             <MapView
                 provider={PROVIDER_GOOGLE}
                 initialRegion={{
-                    latitude: 37.541,
-                    longitude: 126.986,
+                    latitude: 36.841674,
+                    longitude: 127.073682,
                     latitudeDelta: 0.0922,
                     longitudeDelta: 0.0421,
                 }}
