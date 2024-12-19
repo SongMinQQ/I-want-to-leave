@@ -4,8 +4,7 @@
 # environment variable
 .env
 # Xcode
-# google api key
-android/app/src/main/res/values/google_maps_api
+
 #
 build/
 *.pbxuser
@@ -36,6 +35,7 @@ local.properties
 .cxx/
 *.keystore
 !debug.keystore
+google_maps_api
 
 # node.js
 #

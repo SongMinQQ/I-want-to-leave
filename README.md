@@ -10,7 +10,7 @@ add google_maps_api.xml file to /android/app/src/main/res/values
 
 ```
 <resources>
-    <string name="google_maps_key" translatable="false">AIzaSyBrCs-prFicCAwToLU74ebmJvJv0JOQTFM</string>
+    <string name="google_maps_key" translatable="false">your key</string>
 </resources>
 ```
 
