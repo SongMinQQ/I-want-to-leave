@@ -14,7 +14,7 @@ export interface TripSchedule {
     member: string[]; // Array of member names
     schedule: { 
       date: string; 
-      timelines: { time: Date; title: string; description: string }[] 
+      timelines: { time: string; title: string; description: string }[] 
     }[]; // Array of ScheduleItem objects
   }
 
@@ -57,4 +57,12 @@ export interface travelDetail {
   title: string; // e.g., "여행가자"
   travelCode: number; // e.g., 34
   usernames: string[];
+}
+
+export interface recommandAI {
+  startLocation: string;
+  startDate: string;
+  endDate: string;
+  keywords: string;
+  carOwned: boolean;
 }

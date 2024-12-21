@@ -2,15 +2,17 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import React, { useEffect } from 'react';
 import CoursesScreen from '../screens/CoursesScreen';
 import ChattingMainScreen from '../screens/ChattingMainScreen';
-import SettingScreen from '../screens/SettingScreen';
+// import SettingScreen from '../screens/SettingScreen';
 import MyPageTopTabNavigation from './MyPageTopTabNavigation';
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import Entypo from 'react-native-vector-icons/Entypo'
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+// import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import { BackHandler, ToastAndroid, TouchableOpacity } from 'react-native';
 import { NavigationProp, useNavigation, useNavigationState } from '@react-navigation/native';
 import { RootStackParamList } from '../types/types';
+import AIRecommandScreen from '../screens/AIRecommandScreen';
 
 
 const Tab = createBottomTabNavigator();
@@ -103,11 +105,11 @@ const MainContentsNavigation: React.FC = () => {
             }}
             />
             <Tab.Screen 
-            name='setting' 
-            component={SettingScreen}
+            name='aiRecommand' 
+            component={AIRecommandScreen}
             options={{
-                tabBarIcon:({color}) => (<MaterialIcons name='settings' size={20} color={color}/>),
-                tabBarLabel: "설정"
+                tabBarIcon:({color}) => (<MaterialCommunityIcons name='robot-happy' size={20} color={color}/>),
+                tabBarLabel: "AI추천"
             }}
             />
         </Tab.Navigator>

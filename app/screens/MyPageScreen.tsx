@@ -35,10 +35,6 @@ const MyPageScreen: React.FC = () => {
             console.error(err);
         }
     }
-    useEffect(()=> {
-        console.log(myTravels);
-        
-    }, [myTravels]);
     useFocusEffect(
             React.useCallback(() => {
                 getUserTravel(); // 화면이 포커스될 때마다 유저의 여행정보를 가져옴

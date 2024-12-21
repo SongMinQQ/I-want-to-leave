@@ -60,9 +60,6 @@ const WriteTripScheduleScreen: React.FC = () => {
         schedule: []
     });
 
-    useEffect(()=> {
-        console.log(newSchedule);
-    }, [newSchedule]);
     useEffect(() => {
         // 키보드 이벤트 리스너 추가
         const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', () => {

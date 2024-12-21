@@ -38,6 +38,33 @@ const TravelDetailNavigation: React.FC = () => {
     useEffect(() => {
         getTravelDetailInfo();
     },[]);
+
+    // useEffect(() => {
+    //     const socket = new WebSocket('ws://192.168.219.105:8080/travel-socket'); // 실제 서버 IP로 변경
+
+    //     socket.onopen = () => {
+    //         console.log('WebSocket connected');
+    //         // socket.send(JSON.stringify({ content: "Hello, Server!" }));
+    //     };
+
+    //     socket.onmessage = (event) => {
+    //         console.log("Received message: ", event.data);
+    //         // 메시지 처리 로직 추가
+    //     };
+
+    //     socket.onerror = (error) => {
+    //         console.error("WebSocket error: ", error);
+    //     };
+
+    //     socket.onclose = () => {
+    //         console.log('WebSocket closed');
+    //     };
+
+    //     // 컴포넌트 언마운트 시 소켓 닫기
+    //     return () => {
+    //         socket.close();
+    //     };
+    // }, []);
     return (
         <Tab.Navigator
     screenOptions={{

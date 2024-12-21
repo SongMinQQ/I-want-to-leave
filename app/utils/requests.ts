@@ -16,5 +16,6 @@ export const urls = {
     profilePostInfo: `${localServer}/mypage/post-info`,
     profileCommentInfo: `${localServer}/mypage/comment-info`,
     profileTravelInfo: `${localServer}/mypage/travel-info`,
+    aiCheck: (travelCode: number) => `${localServer}/schedule/${travelCode}/ai-check`,
 }
 

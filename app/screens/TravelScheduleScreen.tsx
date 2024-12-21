@@ -1,28 +1,41 @@
-import React from 'react';
-import { View } from 'react-native';
+import React, { useEffect } from 'react';
+import { Text, View, FlatList } from 'react-native';
 import { travelDetail } from '../types/types';
+import TravelTimeline from '../components/travel/TravelTimeline';
 
 interface TravelScheduleScreenProps {
     travelDetail: travelDetail;
 }
-const TravelScheduleScreen: React.FC<TravelScheduleScreenProps> = ({travelDetail}) => {
+
+const TravelScheduleScreen: React.FC<TravelScheduleScreenProps> = ({ travelDetail }) => {
     const {
-        createdAt, // e.g., "2024-12-15T16:16:26.000+00:00"
-        deletedAt, // e.g., null or "2024-12-15T16:16:26.000+00:00"
-        endDate, // e.g., "2024-12-15"
-        imageUrl, // Array of image URLs
-        information, // e.g., "제주도"
-        isDeleted, // e.g., false
-        preparation, // Replace `any` with the specific type if known
         schedule, // Array of schedules
-        startDate, // e.g., "2024-12-15"
-        title, // e.g., "여행가자"
-        travelCode,// e.g., 34
-        usernames,
     } = travelDetail;
+
+    useEffect(() => {
+        console.log("스케쥴정보 : ", schedule);
+    }, [schedule]);
+
+    const renderItem = ({ item }:any) => (
+        <TravelTimeline 
+            scheduleDate={item.date} 
+            scheduleTimeline={item.timeLines} 
+        />
+    );
+
     return (
-        <View>
-            
+        <View style={{ flex: 1 }}>
+            {schedule && schedule.length > 0 ? (
+                <FlatList
+                    data={schedule}
+                    renderItem={renderItem}
+                    keyExtractor={(item) => item.date} // Ensure date is unique
+                />
+            ) : (
+                <View>
+                    <Text>타임라인을 불러오는 중입니다..</Text>
+                </View>
+            )}
         </View>
     );
 };

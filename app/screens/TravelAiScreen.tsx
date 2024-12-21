@@ -20,6 +20,8 @@ const TravelAiScreen: React.FC<TravelAiScreenProps> = ({travelDetail}) => {
         travelCode,// e.g., 34
         usernames,
     } = travelDetail;
+
+    const get
     return (
         <View>
             
